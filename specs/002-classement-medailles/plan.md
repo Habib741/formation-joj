@@ -98,7 +98,7 @@ Chaque scénario de la spec est prouvé par au moins un test, au niveau le plus 
 
 Six tâches, dans l'ordre des couches. Chaque tâche nomme le test à écrire d'abord et cite les scénarios qu'elle couvre ; elle tient dans un commit.
 
-- [ ] T01 [002-AS1, AS2, AS6] Écrire d'abord `domain/nation-standings.spec.ts` (« 002-AS1: … », « 002-AS2: … », « 002-AS6: … »), puis `packages/shared/src/medals.ts`, l'entité `Medal` et `buildNationStandings`
+- [x] T01 [002-AS1, AS2, AS6] Écrire d'abord `domain/nation-standings.spec.ts` (« 002-AS1: … », « 002-AS2: … », « 002-AS6: … »), puis `packages/shared/src/medals.ts`, l'entité `Medal` et `buildNationStandings`
 - [ ] T02 [002-AS3, AS7] Écrire d'abord `application/medals.application.spec.ts` (« 002-AS3: … », « 002-AS7: … »), puis le port, le repository en mémoire, `ListNationStandings` et `ListMedals`
 - [ ] T03 [002-AS5, AS6] Écrire d'abord `infra/drizzle-medal.repository.int.spec.ts` (« 002-AS5: … », « 002-AS6: … »), puis la table `nations`, la migration générée, le mapper et le repository Drizzle
 - [ ] T04 [002-AS1, AS3, AS7] Écrire d'abord `apps/api/test/medals.e2e.spec.ts` et `infra/demo-data.spec.ts` (« 002-AS1: … », « 002-AS3: … », « 002-AS7: … »), puis le controller, le module, son ajout à `app.module.ts` et `03-nations.json`
