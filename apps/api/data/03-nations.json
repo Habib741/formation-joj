@@ -1,0 +1,14 @@
+[
+  { "code": "br", "name": "Brésil", "continent": "ameriques" },
+  { "code": "cn", "name": "Chine", "continent": "asie" },
+  { "code": "cz", "name": "République tchèque", "continent": "europe" },
+  { "code": "fr", "name": "France", "continent": "europe" },
+  { "code": "gb", "name": "Grande-Bretagne", "continent": "europe" },
+  { "code": "jp", "name": "Japon", "continent": "asie" },
+  { "code": "ke", "name": "Kenya", "continent": "afrique" },
+  { "code": "ma", "name": "Maroc", "continent": "afrique" },
+  { "code": "no", "name": "Norvège", "continent": "europe" },
+  { "code": "nz", "name": "Nouvelle-Zélande", "continent": "oceanie" },
+  { "code": "sn", "name": "Sénégal", "continent": "afrique" },
+  { "code": "tv", "name": "Tuvalu", "continent": "oceanie" }
+]
