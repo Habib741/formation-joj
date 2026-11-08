@@ -103,7 +103,7 @@ Puis créer `apps/api/.env` à partir de `apps/api/.env.example` et y décomment
 
 Le code ne dépend pas du mode : un seul provider Nest fournit l'instance Drizzle (`src/core/database/`). Les tests utilisent toujours PGlite en mémoire.
 
-**Données de démo** : un fichier `apps/api/data/<table>.json` par table, qui contient un tableau de lignes dont les clés sont les noms des colonnes en base (`created_at`). Un préfixe fixe l'ordre de chargement si une table en référence une autre (`01-pays.json`, `02-athletes.json`). Relancer `db:seed` ignore les lignes déjà présentes.
+**Données de démo** : un fichier `apps/api/data/<table>.json` par table, qui contient un tableau de lignes dont les clés sont les noms des colonnes en base (`created_at`). Un préfixe fixe l'ordre de chargement si une table en référence une autre (`01-pays.json`, `02-athletes.json`). Relancer `db:seed` ignore les lignes déjà présentes. Une base chargée avant la migration `0002_event_awards_medals` n'affiche donc aucune médaille : `pnpm db:reset` la vide et recharge les données de démo.
 
 ## Ajouter une fonctionnalité
 
