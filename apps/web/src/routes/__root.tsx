@@ -1,6 +1,9 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
 import { buttonVariants } from '@/components/ui/button';
 
+const MENU_LINK = 'rounded-full px-4 py-2 text-sm font-semibold';
+const MENU_LINK_ACTIVE = 'bg-primary text-primary-foreground';
+
 function SiteHeader() {
   return (
     <header className="bg-card">
@@ -12,12 +15,12 @@ function SiteHeader() {
             <span className="mt-1 text-xs font-semibold tracking-wide">Youth Olympic Games</span>
           </span>
         </Link>
-        <nav aria-label="Menu principal">
-          <Link
-            to="/resultats"
-            className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
-          >
+        <nav aria-label="Menu principal" className="flex items-center gap-1">
+          <Link to="/resultats" className={MENU_LINK} activeProps={{ className: MENU_LINK_ACTIVE }}>
             Résultats
+          </Link>
+          <Link to="/medailles" className={MENU_LINK} activeProps={{ className: MENU_LINK_ACTIVE }}>
+            Médailles
           </Link>
         </nav>
       </div>
