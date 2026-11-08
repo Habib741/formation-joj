@@ -1,0 +1,11 @@
+import type { SportSlug } from '@joj/shared';
+import type { SportEvent } from '../domain/sport-event';
+
+/**
+ * Port de persistance : ce dont les cas d'usage ont besoin, rien de plus.
+ * Implémenté par DrizzleSportEventRepository (infra) et InMemorySportEventRepository (tests).
+ */
+export abstract class SportEventRepository {
+  /** Les épreuves d'un jour (AAAA-MM-JJ, heure de Dakar), triées par sport puis par heure. */
+  abstract listByDay(day: string, sport?: SportSlug): Promise<SportEvent[]>;
+}
