@@ -1,6 +1,7 @@
 // Lu par drizzle-kit pour générer les migrations : ce fichier n'importe que drizzle-orm.
 import { sql } from 'drizzle-orm';
 import {
+  boolean,
   check,
   integer,
   pgTable,
@@ -18,6 +19,8 @@ export const sportEvents = pgTable(
     sport: varchar('sport', { length: 50 }).notNull(),
     name: varchar('name', { length: 150 }).notNull(),
     status: varchar('status', { length: 20 }).notNull(),
+    // Une finale attribue des médailles ; une manche ou une demi-finale, non.
+    awardsMedals: boolean('awards_medals').notNull().default(false),
     startsAt: timestamp('starts_at', { withTimezone: true, precision: 3 }).notNull(),
   },
   (table) => [uniqueIndex('sport_events_identity_key').on(table.sport, table.name, table.startsAt)],

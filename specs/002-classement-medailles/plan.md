@@ -4,7 +4,7 @@
 
 ## 1. Résumé
 
-On construit le module métier `medals`, qui déduit les médailles des résultats déjà en base et calcule le classement des nations, ainsi que la page web `/medailles` qui affiche les deux. Une fois les tâches terminées, le visiteur voit les nations classées par or, puis argent, puis bronze, les filtre par continent, et consulte les médailles par sport et par épreuve, filtrées par sport et par type. Le travail est découpé en six tâches, dans l'ordre des couches : domaine, cas d'usage, base de données, routes de l'API, fausse API du front, puis écran. Les médailles sont en lecture seule : aucune table de médailles n'est créée, car une médaille est simplement un rang de 1 à 3 dans une épreuve terminée. L'évolution du classement dans le temps, le début du classement sur l'accueil et le suivi d'une nation sont laissés de côté.
+On construit le module métier `medals`, qui déduit les médailles des résultats déjà en base et calcule le classement des nations, ainsi que la page web `/medailles` qui affiche les deux. Une fois les tâches terminées, le visiteur voit les nations classées par or, puis argent, puis bronze, les filtre par continent, et consulte les médailles par sport et par épreuve, filtrées par sport et par type. Le travail est découpé en six tâches, dans l'ordre des couches : domaine, cas d'usage, base de données, routes de l'API, fausse API du front, puis écran. Les médailles sont en lecture seule : aucune table de médailles n'est créée, car une médaille est simplement un rang de 1 à 3 dans une épreuve terminée qui attribue des médailles. L'évolution du classement dans le temps, le début du classement sur l'accueil et le suivi d'une nation sont laissés de côté.
 
 Les mots de la spec et leur nom dans le code :
 
@@ -36,7 +36,7 @@ On crée le module `medals`, organisé comme le module `results` : un dossier pa
   - `infra/medals.schema.ts` décrit la table `nations`.
   - `infra/medal.mapper.ts` transforme les lignes en entités `Medal` et en objets `Nation`.
   - `infra/drizzle-medal.repository.ts` implémente le port. Il lit les tables du module `results` pour les médailles et la table `nations` pour les nations.
-  - `apps/api/data/03-nations.json` contient les nations du jeu de démonstration : celles qui ont déjà des résultats, plus la Nouvelle-Zélande, le Maroc et Tuvalu, pour couvrir les cinq continents et montrer des nations sans médaille. Les résultats existants suffisent pour le reste : à nombre d'or égal, le Sénégal (1-2-0) passe devant la France (1-1-0), et le Kenya et la Grande-Bretagne (0-1-0) partagent un rang.
+  - `apps/api/data/03-nations.json` contient les nations du jeu de démonstration : celles qui ont déjà des résultats, plus la Nouvelle-Zélande, le Maroc et Tuvalu, pour couvrir les cinq continents et montrer des nations sans médaille. Les résultats existants suffisent pour le reste : à nombre d'or égal, le Sénégal (1-1-0) passe devant le Japon (1-0-0), et le Kenya, la France et la Grande-Bretagne (0-1-0) partagent un rang.
 - **http** : `http/medals.controller.ts` expose deux routes, `medals.module.ts` relie le port à son implémentation, et les deux réponses valent 200.
   - `GET /api/medals/standings?continent=afrique` calcule le classement des nations, avec un filtre `continent` facultatif. Elle renvoie toutes les nations demandées, chacune avec `rank`, `nationCode`, `nationName`, `continent`, `gold`, `silver`, `bronze` et `total`, dans l'ordre du classement.
   - `GET /api/medals?sport=athletisme&type=gold` lit les médailles, avec des filtres `sport` et `type` facultatifs. Elle renvoie une liste triée par sport, puis par heure d'épreuve, puis par rang, vide si aucune médaille ne correspond. Chaque médaille contient `id`, `type`, `sport`, `eventId`, `eventName`, `competitor`, `nationCode` et `nationName`.
@@ -51,7 +51,7 @@ On crée le module `medals`, organisé comme le module `results` : un dossier pa
 
 ## 3. Données
 
-On stocke uniquement la liste des nations, car les médailles se déduisent des tables `sport_events` et `sport_event_entries`, créées par le module `results` et inchangées ici. Ainsi, le classement et les résultats ne peuvent pas se contredire. La migration se génère avec `pnpm db:generate --name=nations`.
+On stocke uniquement la liste des nations, car les médailles se déduisent des tables `sport_events` et `sport_event_entries`, créées par le module `results`, où `sport_events` reçoit la colonne `awards_medals` (booléen, faux par défaut), qui distingue une finale d'une manche ou d'une demi-finale. Ainsi, le classement et les résultats ne peuvent pas se contredire. La migration se génère avec `pnpm db:generate --name=nations`.
 
 Table `nations` :
 
@@ -59,7 +59,7 @@ Table `nations` :
 - `name` (varchar) : le nom affiché.
 - `continent` (varchar, vérifié par le schéma partagé à la lecture) : il sert au filtre par continent.
 
-Une médaille se lit ainsi : une participation dont le `rank` vaut 1, 2 ou 3, dans une épreuve dont le `status` vaut `finished`. Une équipe n'a qu'une seule participation, grâce à l'unicité déjà posée sur `event_id` et `competitor` : elle compte donc pour une seule médaille (scénario AS6). Rien n'interdit deux participations au même rang : un podium à deux bronzes donne bien deux médailles.
+Une médaille se lit ainsi : une participation dont le `rank` vaut 1, 2 ou 3, dans une épreuve dont le `status` vaut `finished` et dont `awards_medals` est vrai. Une équipe n'a qu'une seule participation, grâce à l'unicité déjà posée sur `event_id` et `competitor` : elle compte donc pour une seule médaille (scénario AS6). Rien n'interdit deux participations au même rang : un podium à deux bronzes donne bien deux médailles.
 
 Aucune clé étrangère ne relie `sport_event_entries.nation_code` à `nations.code`, car `results.schema.ts` n'importe que drizzle-orm et que le module `results` ne doit pas dépendre du module `medals`. Un test vérifie à la place que chaque nation citée dans `02-sport_event_entries.json` figure dans `03-nations.json`.
 
@@ -114,3 +114,7 @@ Six tâches, dans l'ordre des couches. Chaque tâche nomme le test à écrire d'
 ### Passage 2
 
 - [x] T08 [002-AS1] Écrire d'abord `apps/web/src/routes/medailles.assets.test.ts` (« 002-AS1: the design mock-up is not served with the site »), puis déplacer `apps/web/public/design.png` vers `specs/assets/design.png`, le commiter et mettre à jour `apps/web/src/styles.css:6` et `specs/prd-jojpulse.md:17`. Cette correction est aussi la T07 du plan 001, à cocher en même temps. Preuve : relecteur, `apps/web/public/design.png` non suivi et hors du plan 002.
+
+### Décision humaine après le passage 2
+
+- [x] T09 [002-AS5, AS7] Écrire d'abord, dans `infra/drizzle-medal.repository.int.spec.ts`, le test « 002-AS5: gives no medal for a finished event that does not award medals » et, dans `infra/demo-data.spec.ts`, le test « 002-AS7: the demonstration sailing heat awards no medal », puis ajouter la colonne `awards_medals` à `sport_events`, générer la migration, filtrer sur cette colonne dans `DrizzleMedalRepository` et renseigner `01-sport_events.json`. Preuve : relecteur, passage 1, « Planche à voile, première manche » donne deux médailles ; l'humain a choisi cette correction.

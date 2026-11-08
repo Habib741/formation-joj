@@ -15,6 +15,13 @@
       "when": 1794169171734,
       "tag": "0001_nations",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794170995260,
+      "tag": "0002_event_awards_medals",
+      "breakpoints": true
     }
   ]
 }

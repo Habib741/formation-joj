@@ -9,6 +9,7 @@ const sprintId = randomUUID();
 const longJumpId = randomUUID();
 const handballId = randomUUID();
 const unfinishedId = randomUUID();
+const heatId = randomUUID();
 
 function entry(eventId: string, nationCode: string, competitor: string, rank: number) {
   return {
@@ -37,6 +38,7 @@ describe('DrizzleMedalRepository (in-memory PGlite, migrations applied)', () => 
         sport: 'athletisme',
         name: 'Saut en longueur',
         status: 'finished',
+        awardsMedals: true,
         startsAt: new Date('2026-11-09T10:00:00.000Z'),
       },
       {
@@ -44,6 +46,7 @@ describe('DrizzleMedalRepository (in-memory PGlite, migrations applied)', () => 
         sport: 'athletisme',
         name: '100 m hommes',
         status: 'finished',
+        awardsMedals: true,
         startsAt: new Date('2026-11-08T18:32:00.000Z'),
       },
       {
@@ -51,6 +54,7 @@ describe('DrizzleMedalRepository (in-memory PGlite, migrations applied)', () => 
         sport: 'beach-handball',
         name: 'Finale',
         status: 'finished',
+        awardsMedals: true,
         startsAt: new Date('2026-11-08T09:00:00.000Z'),
       },
       {
@@ -58,7 +62,16 @@ describe('DrizzleMedalRepository (in-memory PGlite, migrations applied)', () => 
         sport: 'athletisme',
         name: 'Relais',
         status: 'in-progress',
+        awardsMedals: true,
         startsAt: new Date('2026-11-08T08:00:00.000Z'),
+      },
+      {
+        id: heatId,
+        sport: 'voile',
+        name: 'Première manche',
+        status: 'finished',
+        awardsMedals: false,
+        startsAt: new Date('2026-11-07T08:00:00.000Z'),
       },
     ]);
     await connection.db
@@ -71,6 +84,7 @@ describe('DrizzleMedalRepository (in-memory PGlite, migrations applied)', () => 
         entry(longJumpId, 'sn', 'Sauteur', 1),
         entry(handballId, 'br', 'Équipe du Brésil', 1),
         entry(unfinishedId, 'jp', 'Relayeur', 1),
+        entry(heatId, 'fr', 'Véliplanchiste', 1),
       ]);
     await connection.db.insert(nations).values([
       { code: 'sn', name: 'Sénégal', continent: 'afrique' },
@@ -107,6 +121,12 @@ describe('DrizzleMedalRepository (in-memory PGlite, migrations applied)', () => 
         { code: 'tv', name: 'Tuvalu', continent: 'oceanie' },
       ]),
     );
+  });
+
+  it('002-AS5: gives no medal for a finished event that does not award medals', async () => {
+    const found = await repository.listMedals();
+
+    expect(found.filter((medal) => medal.eventId === heatId)).toEqual([]);
   });
 
   it('002-AS6: reads a single medal in the name of a medalist team', async () => {

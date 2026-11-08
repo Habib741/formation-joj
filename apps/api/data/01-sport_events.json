@@ -4,55 +4,63 @@
     "sport": "athletisme",
     "name": "100 m hommes, finale",
     "status": "finished",
-    "starts_at": "2026-11-08T18:32:00.000Z"
+    "starts_at": "2026-11-08T18:32:00.000Z",
+    "awards_medals": true
   },
   {
     "id": "a0000000-0000-4000-8000-000000000002",
     "sport": "athletisme",
     "name": "Saut en longueur femmes, finale",
     "status": "in-progress",
-    "starts_at": "2026-11-08T19:00:00.000Z"
+    "starts_at": "2026-11-08T19:00:00.000Z",
+    "awards_medals": true
   },
   {
     "id": "a0000000-0000-4000-8000-000000000003",
     "sport": "cyclisme-sur-route",
     "name": "Course en ligne femmes",
     "status": "finished",
-    "starts_at": "2026-11-08T09:30:00.000Z"
+    "starts_at": "2026-11-08T09:30:00.000Z",
+    "awards_medals": true
   },
   {
     "id": "a0000000-0000-4000-8000-000000000004",
     "sport": "beach-handball",
     "name": "Femmes, finale",
     "status": "finished",
-    "starts_at": "2026-11-08T16:00:00.000Z"
+    "starts_at": "2026-11-08T16:00:00.000Z",
+    "awards_medals": true
   },
   {
     "id": "a0000000-0000-4000-8000-000000000005",
     "sport": "futsal",
     "name": "Hommes, demi-finale",
     "status": "scheduled",
-    "starts_at": "2026-11-08T20:30:00.000Z"
+    "starts_at": "2026-11-08T20:30:00.000Z",
+    "awards_medals": false
   },
   {
     "id": "a0000000-0000-4000-8000-000000000006",
     "sport": "judo",
     "name": "-60 kg hommes, finale",
     "status": "finished",
-    "starts_at": "2026-11-07T17:00:00.000Z"
+    "starts_at": "2026-11-07T17:00:00.000Z",
+    "awards_medals": true
   },
   {
     "id": "a0000000-0000-4000-8000-000000000007",
     "sport": "natation",
     "name": "100 m nage libre femmes, finale",
     "status": "scheduled",
-    "starts_at": "2026-11-09T18:00:00.000Z"
+    "starts_at": "2026-11-09T18:00:00.000Z",
+    "awards_medals": true
   },
   {
     "id": "a0000000-0000-4000-8000-000000000008",
     "sport": "voile",
     "name": "Planche à voile, première manche",
     "status": "finished",
-    "starts_at": "2026-10-31T11:00:00.000Z"
+    "starts_at": "2026-10-31T11:00:00.000Z",
+    "awards_medals": false
   }
 ]

@@ -37,6 +37,7 @@ describe('/api/medals (e2e)', () => {
         sport: 'athletisme',
         name: '100 m hommes',
         status: 'finished',
+        awardsMedals: true,
         startsAt: new Date('2026-11-08T18:32:00.000Z'),
       },
       {
@@ -44,6 +45,7 @@ describe('/api/medals (e2e)', () => {
         sport: 'judo',
         name: '-60 kg hommes',
         status: 'finished',
+        awardsMedals: true,
         startsAt: new Date('2026-11-08T10:00:00.000Z'),
       },
     ]);

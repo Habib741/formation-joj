@@ -17,13 +17,19 @@ export class DrizzleMedalRepository extends MedalRepository {
     super();
   }
 
-  /** Une médaille est un rang de 1 à 3 dans une épreuve terminée : les résultats sont la seule source. */
+  /** Une médaille est un rang de 1 à 3 dans une épreuve terminée qui en attribue : les résultats sont la seule source. */
   async listMedals(): Promise<Medal[]> {
     const rows = await this.db
       .select({ entry: sportEventEntries, event: sportEvents })
       .from(sportEventEntries)
       .innerJoin(sportEvents, eq(sportEventEntries.eventId, sportEvents.id))
-      .where(and(eq(sportEvents.status, 'finished'), lte(sportEventEntries.rank, LAST_MEDAL_RANK)))
+      .where(
+        and(
+          eq(sportEvents.status, 'finished'),
+          eq(sportEvents.awardsMedals, true),
+          lte(sportEventEntries.rank, LAST_MEDAL_RANK),
+        ),
+      )
       .orderBy(
         asc(sportEvents.sport),
         asc(sportEvents.startsAt),

@@ -19,7 +19,7 @@ export function medalTypeForRank(rank: number): MedalType | null {
   return null;
 }
 
-/** Une médaille, en lecture seule : un rang de 1 à 3 dans une épreuve terminée. */
+/** Une médaille, en lecture seule : un rang de 1 à 3 dans une épreuve terminée qui en attribue. */
 export class Medal {
   private constructor(private readonly props: MedalProps) {}
 
