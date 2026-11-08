@@ -12,11 +12,11 @@ export interface MedalProps {
 }
 
 /** Le rang 1 donne l'or, le 2 l'argent, le 3 le bronze ; aucun autre rang ne donne de médaille. */
-export function medalTypeForRank(rank: number): MedalType {
+export function medalTypeForRank(rank: number): MedalType | null {
   if (rank === 1) return 'gold';
   if (rank === 2) return 'silver';
   if (rank === 3) return 'bronze';
-  throw new RangeError(`Le rang ${rank} ne donne pas de médaille.`);
+  return null;
 }
 
 /** Une médaille, en lecture seule : un rang de 1 à 3 dans une épreuve terminée. */

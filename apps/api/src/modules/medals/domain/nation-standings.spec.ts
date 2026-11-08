@@ -94,6 +94,10 @@ describe('buildNationStandings', () => {
     expect([1, 2, 3].map(medalTypeForRank)).toEqual(['gold', 'silver', 'bronze']);
   });
 
+  it('002-AS5: gives no medal type to a rank outside the podium', () => {
+    expect(medalTypeForRank(4)).toBeNull();
+  });
+
   it('002-AS2: gives the same rank to perfectly tied nations and skips the shared places', () => {
     const standings = buildNationStandings(
       [

@@ -109,4 +109,4 @@ Six tâches, dans l'ordre des couches. Chaque tâche nomme le test à écrire d'
 
 ### Passage 1
 
-- [ ] T07 [002-AS5] Écrire d'abord, dans `domain/nation-standings.spec.ts`, le test « 002-AS5: gives no medal type to a rank outside the podium » (`medalTypeForRank` rend `null` pour le rang 4), puis retirer le `throw` natif du domaine et laisser `infra/medal.mapper.ts` refuser une ligne sans type de médaille. Preuve : relecteur, `apps/api/src/modules/medals/domain/medal.ts:19` lève un `RangeError` hors `infra/`, sans code stable ni catégorie.
+- [x] T07 [002-AS5] Écrire d'abord, dans `domain/nation-standings.spec.ts`, le test « 002-AS5: gives no medal type to a rank outside the podium » (`medalTypeForRank` rend `null` pour le rang 4), puis retirer le `throw` natif du domaine et laisser `infra/medal.mapper.ts` refuser une ligne sans type de médaille. Preuve : relecteur, `apps/api/src/modules/medals/domain/medal.ts:19` lève un `RangeError` hors `infra/`, sans code stable ni catégorie.

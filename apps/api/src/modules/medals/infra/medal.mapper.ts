@@ -6,10 +6,13 @@ import type { NationRow } from './medals.schema';
 
 /** Lignes des tables → domaine. Une valeur inconnue en base est un bug : on échoue tôt. */
 export function toMedal(entry: SportEventEntryRow, event: SportEventRow): Medal {
-  if (entry.rank === null) throw new RangeError(`La participation ${entry.id} n'a pas de rang.`);
+  const type = entry.rank === null ? null : medalTypeForRank(entry.rank);
+  if (type === null) {
+    throw new RangeError(`La participation ${entry.id} (rang ${entry.rank}) n'a pas de médaille.`);
+  }
   return Medal.restore({
     id: entry.id,
-    type: medalTypeForRank(entry.rank),
+    type,
     sport: sportSlugSchema.parse(event.sport),
     eventId: event.id,
     eventName: event.name,
