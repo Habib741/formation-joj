@@ -10,6 +10,16 @@ export interface RankingEntry {
   mention: RankingMention | null;
 }
 
+/** Un athlète ou une équipe d'une nation, avec son épreuve, son heure et son statut. */
+export interface NationAthlete {
+  competitor: string;
+  eventId: string;
+  eventName: string;
+  sport: SportSlug;
+  startsAt: Date;
+  status: SportEventStatus;
+}
+
 export interface SportEventProps {
   id: string;
   sport: SportSlug;
@@ -51,8 +61,31 @@ export class SportEvent {
   /** Les classés par rang, puis les participants avec une mention. Vide avant la fin de l'épreuve. */
   get ranking(): RankingEntry[] {
     if (this.props.status !== 'finished') return [];
-    return this.props.entries.toSorted(byRankThenMention);
+    return this.props.entries.filter(hasResult).toSorted(byRankThenMention);
   }
+
+  /** Vrai dès qu'un participant de cette nation est inscrit, même sans résultat. */
+  hasParticipantFrom(nationCode: string): boolean {
+    return this.props.entries.some((entry) => entry.nationCode === nationCode);
+  }
+
+  athletesOf(nationCode: string): NationAthlete[] {
+    return this.props.entries
+      .filter((entry) => entry.nationCode === nationCode)
+      .map((entry) => ({
+        competitor: entry.competitor,
+        eventId: this.id,
+        eventName: this.name,
+        sport: this.sport,
+        startsAt: this.startsAt,
+        status: this.status,
+      }));
+  }
+}
+
+/** Un participant seulement inscrit n'a ni rang ni mention : il n'a pas sa place au classement. */
+function hasResult(entry: RankingEntry): boolean {
+  return entry.rank !== null || entry.mention !== null;
 }
 
 function byRankThenMention(a: RankingEntry, b: RankingEntry): number {

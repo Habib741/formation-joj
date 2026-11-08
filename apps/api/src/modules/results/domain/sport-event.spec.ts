@@ -60,4 +60,35 @@ describe('SportEvent', () => {
       { rank: null, performance: null },
     ]);
   });
+
+  it('003-AS5: says whether a nation takes part, even without a rank yet', () => {
+    const event = sportEvent('scheduled', [entry({ competitor: 'Awa Diop', nationCode: 'sn' })]);
+
+    expect(event.hasParticipantFrom('sn')).toBe(true);
+    expect(event.hasParticipantFrom('ke')).toBe(false);
+  });
+
+  it('003-AS6: gives the athletes of a nation with their event, time and status', () => {
+    const event = sportEvent('scheduled', [
+      entry({ competitor: 'Awa Diop', nationCode: 'sn' }),
+      entry({ competitor: 'Gift Bright', nationCode: 'ke' }),
+    ]);
+
+    expect(event.athletesOf('sn')).toEqual([
+      {
+        competitor: 'Awa Diop',
+        eventId: event.id,
+        eventName: '100 m hommes, finale',
+        sport: 'athletisme',
+        startsAt: new Date('2026-11-08T18:32:00.000Z'),
+        status: 'scheduled',
+      },
+    ]);
+  });
+
+  it('003-AS6: leaves a participant without result out of the ranking of a finished event', () => {
+    const event = sportEvent('finished', [gold, entry({ competitor: 'Sans résultat' })]);
+
+    expect(event.ranking).toEqual([gold]);
+  });
 });

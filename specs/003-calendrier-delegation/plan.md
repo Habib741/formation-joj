@@ -97,7 +97,7 @@ Chaque scénario de la spec est prouvé par au moins un test, au niveau le plus 
 
 Six tâches, dans l'ordre des couches. Chaque tâche nomme le test à écrire d'abord et cite les scénarios qu'elle couvre ; elle tient dans un commit.
 
-- [ ] T01 [003-AS5, AS6] Écrire d'abord les tests dans `domain/sport-event.spec.ts` (« 003-AS5: … », « 003-AS6: … »), puis les schémas partagés, `hasParticipantFrom`, `athletesOf` et le `ranking` qui écarte les participants inscrits
+- [x] T01 [003-AS5, AS6] Écrire d'abord les tests dans `domain/sport-event.spec.ts` (« 003-AS5: … », « 003-AS6: … »), puis les schémas partagés, `hasParticipantFrom`, `athletesOf` et le `ranking` qui écarte les participants inscrits
 - [ ] T02 [003-AS1, AS2, AS5, AS6] Écrire d'abord les tests dans `application/results.application.spec.ts` (« 003-AS1: … », « 003-AS2: … », « 003-AS5: … », « 003-AS6: … »), puis `ListDayCalendar`, `ListNationAthletes` et le filtre `nation` de `ListDayResults`
 - [ ] T03 [003-AS6] Écrire d'abord le test dans `infra/drizzle-sport-event.repository.int.spec.ts` (« 003-AS6: … »), puis la contrainte assouplie et la migration générée
 - [ ] T04 [003-AS1, AS5, AS6] Écrire d'abord les tests dans `apps/api/test/results.e2e.spec.ts` (« 003-AS1: … », « 003-AS5: … », « 003-AS6: … »), puis les routes du controller, le module et le jeu de démonstration

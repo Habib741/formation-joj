@@ -51,12 +51,33 @@ export const gamesDaySchema = z.iso
     error: 'The day must be within the Games.',
   });
 
+/** Le fuseau des Jeux, utilisé par défaut pour afficher les horaires. */
+export const DAKAR_TIME_ZONE = 'Africa/Dakar';
+
+/** Le code à deux lettres d'une nation, comme `sn`. */
+export const nationCodeSchema = z.string().regex(/^[a-z]{2}$/);
+
 /** Paramètres de `GET /api/results`. */
 export const dayResultsQuerySchema = z.object({
   date: gamesDaySchema,
   sport: sportSlugSchema.optional(),
+  nation: nationCodeSchema.optional(),
 });
 export type DayResultsQuery = z.infer<typeof dayResultsQuerySchema>;
+
+/** Paramètres de `GET /api/results/calendar`. */
+export const calendarQuerySchema = z.object({
+  date: gamesDaySchema,
+  sport: sportSlugSchema.optional(),
+});
+export type CalendarQuery = z.infer<typeof calendarQuerySchema>;
+
+/** Paramètres de `GET /api/results/athletes`. */
+export const nationAthletesQuerySchema = z.object({
+  date: gamesDaySchema,
+  nation: nationCodeSchema,
+});
+export type NationAthletesQuery = z.infer<typeof nationAthletesQuerySchema>;
 
 /** Une ligne du classement d'une épreuve : soit un rang et une performance, soit une mention. */
 export const rankingEntrySchema = z.object({
@@ -81,3 +102,16 @@ export const sportEventSchema = z.object({
 export type SportEventResponse = z.infer<typeof sportEventSchema>;
 
 export const sportEventListSchema = z.array(sportEventSchema);
+
+/** Un athlète du jour d'une nation, avec son épreuve, son heure et son statut. */
+export const nationAthleteSchema = z.object({
+  competitor: z.string(),
+  eventId: z.uuid(),
+  eventName: z.string(),
+  sport: sportSlugSchema,
+  startsAt: z.iso.datetime(),
+  status: sportEventStatusSchema,
+});
+export type NationAthleteResponse = z.infer<typeof nationAthleteSchema>;
+
+export const nationAthleteListSchema = z.array(nationAthleteSchema);
