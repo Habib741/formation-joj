@@ -99,3 +99,9 @@ Six tâches, dans l'ordre des couches. Chaque tâche nomme le test à écrire d'
 - [x] T04 [004-AS3, AS4, AS6] Écrire d'abord les tests dans `apps/api/test/results.e2e.spec.ts` et `apps/api/test/search.e2e.spec.ts` (« 004-AS3: … », « 004-AS4: … », « 004-AS6: … »), puis les routes, le module `search` et son ajout à `app.module.ts`
 - [x] T05 [004-AS3, AS4, AS6] Écrire d'abord les tests des routes dans `apps/web/src/mocks/handlers.test.ts` (« 004-AS3: … », « 004-AS4: … », « 004-AS6: … »), puis la fausse API et les appels web de ces trois routes
 - [x] T06 [004-AS1, AS2, AS3, AS4, AS5, AS6, AS7] Écrire d'abord `home-page.test.tsx`, `search-page.test.tsx`, `theme-switch.test.tsx`, `live-page.test.tsx` (un test par scénario) et `routes/direct.a11y.test.tsx`, puis les pages, leurs composants, les routes, l'en-tête et la palette sombre
+
+## 7. Corrections
+
+### Passage 1
+
+- [ ] T07 [004-AS4] Écrire d'abord, dans `apps/api/test/search.e2e.spec.ts`, le test « 004-AS4: rejects a text without enough searchable characters (400, RFC 9457) » pour un texte fait de deux signes diacritiques combinants et pour un « é » décomposé, et le même refus dans `apps/web/src/mocks/handlers.test.ts` et `search-page.test.tsx`, puis déplacer `normalizeSearchText` dans `packages/shared/src/search.ts`, contrôler `SEARCH_MIN_LENGTH` sur le texte normalisé dans `searchQuerySchema`, et utiliser ce même contrôle dans `search.queries.ts` et `search-page.tsx`. Preuve : relecteur, `apps/api/src/modules/search/domain/search-hit.ts:25-26` et `packages/shared/src/search.ts`, un texte normalisé vide passe la validation et `findSearchHits` rend tout le catalogue.
