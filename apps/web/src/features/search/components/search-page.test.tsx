@@ -41,6 +41,13 @@ describe('SearchPage', () => {
     expect(await screen.findByText('Aucun résultat pour cette recherche')).toBeInTheDocument();
   });
 
+  it('004-AS4: asks for at least two characters when only accents are typed', async () => {
+    const q = encodeURIComponent('́́');
+    await renderRoute({ initialEntries: [`/recherche?q=${q}`] });
+
+    expect(await screen.findByText('Saisissez au moins 2 caractères')).toBeInTheDocument();
+  });
+
   it('004-AS4: asks for at least two characters', async () => {
     await renderRoute({ initialEntries: ['/recherche?q=a'] });
 

@@ -1,4 +1,4 @@
-import { SEARCH_MIN_LENGTH, type SearchQuery } from '@joj/shared';
+import { isSearchableText, type SearchQuery } from '@joj/shared';
 import { queryOptions, useQuery } from '@tanstack/react-query';
 import { searchApi } from './search.api';
 
@@ -13,7 +13,7 @@ export const searchHitsQueryOptions = (query: SearchQuery) =>
   queryOptions({
     queryKey: searchKeys.hits(query),
     queryFn: ({ signal }) => searchApi.search(query, signal),
-    enabled: query.q.trim().length >= SEARCH_MIN_LENGTH,
+    enabled: isSearchableText(query.q),
   });
 
 export const useSearchHits = (query: SearchQuery) => useQuery(searchHitsQueryOptions(query));

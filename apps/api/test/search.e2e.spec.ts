@@ -57,6 +57,18 @@ describe('/api/search (e2e)', () => {
     expect(response.body).toEqual([]);
   });
 
+  it.each([
+    ['two combining accents', '́́'],
+    ['a decomposed « é »', 'é'],
+  ])(
+    '004-AS4: rejects a text without enough searchable characters (400, RFC 9457): %s',
+    async (_name, q) => {
+      const response = await search(q).expect(400);
+
+      expect(response.body).toMatchObject({ status: 400, code: 'VALIDATION_FAILED' });
+    },
+  );
+
   it('004-AS4: rejects a text that is too short (400, RFC 9457)', async () => {
     const response = await search('a').expect(400);
 

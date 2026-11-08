@@ -205,6 +205,13 @@ describe('mock home, live and search API', () => {
     expect(body).toEqual([]);
   });
 
+  it('004-AS4: rejects a text without enough searchable characters', async () => {
+    const { status, body } = await searchApi('́́');
+
+    expect(status).toBe(400);
+    expect(body).toMatchObject({ status: 400, code: 'VALIDATION_FAILED' });
+  });
+
   it('004-AS4: rejects a text that is too short with a 400 VALIDATION_FAILED problem', async () => {
     const { status, body } = await searchApi('a');
 

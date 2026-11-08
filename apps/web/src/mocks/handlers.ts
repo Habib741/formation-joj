@@ -4,6 +4,7 @@ import {
   medalsQuerySchema,
   nationAthletesQuerySchema,
   nationStandingsQuerySchema,
+  normalizeSearchText,
   type ProblemDetails,
   searchQuerySchema,
   type SportEventResponse,
@@ -57,13 +58,6 @@ export function validationFailed(error: z.ZodError) {
   return problem(400, 'VALIDATION_FAILED', 'The request is invalid.', {
     errors: error.issues.map((issue) => ({ path: issue.path.join('.'), message: issue.message })),
   });
-}
-
-function withoutAccents(text: string): string {
-  return text
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toLowerCase();
 }
 
 /** Les épreuves d'un jour, éventuellement d'un seul sport, triées par sport puis par heure. */
@@ -120,9 +114,9 @@ export const handlers: RequestHandler[] = [
     const query = Object.fromEntries(new URL(request.url).searchParams);
     const parsed = searchQuerySchema.safeParse(query);
     if (!parsed.success) return validationFailed(parsed.error);
-    const wanted = withoutAccents(parsed.data.q);
+    const wanted = normalizeSearchText(parsed.data.q);
     return HttpResponse.json(
-      fixture.searchHits.filter((hit) => withoutAccents(hit.label).includes(wanted)),
+      fixture.searchHits.filter((hit) => normalizeSearchText(hit.label).includes(wanted)),
     );
   }),
 

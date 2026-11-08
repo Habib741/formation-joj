@@ -1,4 +1,10 @@
-import { SPORT_LABELS, SPORT_SLUGS, type SearchHitResponse, type SportSlug } from '@joj/shared';
+import {
+  normalizeSearchText,
+  SPORT_LABELS,
+  SPORT_SLUGS,
+  type SearchHitResponse,
+  type SportSlug,
+} from '@joj/shared';
 
 /** Ce dans quoi l'on cherche : les nations, et les épreuves avec leurs participants. */
 export interface SearchCatalog {
@@ -9,15 +15,6 @@ export interface SearchCatalog {
     startsAt: Date;
     participants: { competitor: string; nationCode: string }[];
   }[];
-}
-
-/** Sans accent, sans majuscule et sans espace autour : « Sénégal » devient « senegal ». */
-export function normalizeSearchText(text: string): string {
-  return text
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .toLowerCase()
-    .trim();
 }
 
 /** Les éléments trouvés, dans l'ordre : nations, sports, épreuves, puis athlètes. */

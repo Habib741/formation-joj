@@ -1,5 +1,6 @@
+import { normalizeSearchText } from '@joj/shared';
 import { describe, expect, it } from 'vitest';
-import { findSearchHits, normalizeSearchText, type SearchCatalog } from './search-hit';
+import { findSearchHits, type SearchCatalog } from './search-hit';
 
 const catalog: SearchCatalog = {
   nations: [

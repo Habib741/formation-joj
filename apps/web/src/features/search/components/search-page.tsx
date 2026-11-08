@@ -1,4 +1,9 @@
-import { SEARCH_MIN_LENGTH, type SearchHitKind, type SearchHitResponse } from '@joj/shared';
+import {
+  isSearchableText,
+  SEARCH_MIN_LENGTH,
+  type SearchHitKind,
+  type SearchHitResponse,
+} from '@joj/shared';
 import { getRouteApi, Link } from '@tanstack/react-router';
 import { useSearchHits } from '../api/search.queries';
 
@@ -14,7 +19,7 @@ const KIND_LABELS: Record<SearchHitKind, string> = {
 export function SearchPage() {
   const { q = '' } = routeApi.useSearch();
   const hits = useSearchHits({ q });
-  const isTooShort = q.trim().length < SEARCH_MIN_LENGTH;
+  const isTooShort = !isSearchableText(q);
 
   return (
     <div className="flex flex-col gap-6">
