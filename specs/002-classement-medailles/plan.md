@@ -104,3 +104,9 @@ Six tâches, dans l'ordre des couches. Chaque tâche nomme le test à écrire d'
 - [x] T04 [002-AS1, AS3, AS7] Écrire d'abord `apps/api/test/medals.e2e.spec.ts` et `infra/demo-data.spec.ts` (« 002-AS1: … », « 002-AS3: … », « 002-AS7: … »), puis le controller, le module, son ajout à `app.module.ts` et `03-nations.json`
 - [x] T05 [002-AS1, AS3, AS5, AS7] Écrire d'abord les tests des routes dans `apps/web/src/mocks/handlers.test.ts` (« 002-AS1: … », « 002-AS3: … », « 002-AS5: … », « 002-AS7: … »), puis la fausse API, `medals.api.ts` et `medals.queries.ts`
 - [x] T06 [002-AS1, AS3, AS4, AS5, AS6, AS7] Écrire d'abord `components/medals-page.test.tsx` (un test par scénario) et `routes/medailles.a11y.test.tsx`, puis la page, ses composants, la route et le lien du menu
+
+## 7. Corrections
+
+### Passage 1
+
+- [ ] T07 [002-AS5] Écrire d'abord, dans `domain/nation-standings.spec.ts`, le test « 002-AS5: gives no medal type to a rank outside the podium » (`medalTypeForRank` rend `null` pour le rang 4), puis retirer le `throw` natif du domaine et laisser `infra/medal.mapper.ts` refuser une ligne sans type de médaille. Preuve : relecteur, `apps/api/src/modules/medals/domain/medal.ts:19` lève un `RangeError` hors `infra/`, sans code stable ni catégorie.
