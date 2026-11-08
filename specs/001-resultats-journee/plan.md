@@ -111,3 +111,7 @@ Six tâches, dans l'ordre des couches. Chaque tâche nomme le test à écrire d'
 ### Passage 1
 
 - [x] T07 [001-AS1] Écrire d'abord `apps/web/src/routes/resultats.assets.test.ts` (« 001-AS1: the design mock-up is not served with the site »), puis déplacer `apps/web/public/design.png` vers `specs/assets/design.png`, le commiter et mettre à jour `apps/web/src/styles.css:6` et `specs/prd-jojpulse.md:17`. Preuve : relecteur, `apps/web/public/design.png` non suivi et absent du plan, alors que le PRD et `styles.css` le citent.
+
+### Passage 2
+
+- [ ] T08 [001-AS1] Écrire d'abord, dans `apps/api/test/results.e2e.spec.ts`, le test « 001-AS1: rejects a day outside the Games (400, RFC 9457) » pour `0000-01-01` et `9999-12-31`, et le même refus dans `apps/web/src/mocks/handlers.test.ts`, puis limiter `date` aux jours des Jeux (`GAMES_FIRST_DAY` à `GAMES_LAST_DAY`) dans `dayResultsQuerySchema` et dans la validation de l'adresse de `apps/web/src/routes/resultats.tsx`. Preuve : relecteur, `packages/shared/src/results.ts:49` et `apps/api/src/modules/results/infra/drizzle-sport-event.repository.ts:21-22`, la route répond 500 `INTERNAL_ERROR` pour ces deux dates.
