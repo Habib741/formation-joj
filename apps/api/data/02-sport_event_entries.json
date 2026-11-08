@@ -1,0 +1,126 @@
+[
+  {
+    "id": "b0000000-0000-4000-8000-000000000001",
+    "event_id": "a0000000-0000-4000-8000-000000000001",
+    "nation_code": "sn",
+    "nation_name": "Sénégal",
+    "competitor": "Athlète Démo A",
+    "rank": 1,
+    "performance": "10,28 s"
+  },
+  {
+    "id": "b0000000-0000-4000-8000-000000000002",
+    "event_id": "a0000000-0000-4000-8000-000000000001",
+    "nation_code": "ke",
+    "nation_name": "Kenya",
+    "competitor": "Athlète Démo B",
+    "rank": 2,
+    "performance": "10,31 s"
+  },
+  {
+    "id": "b0000000-0000-4000-8000-000000000003",
+    "event_id": "a0000000-0000-4000-8000-000000000001",
+    "nation_code": "cn",
+    "nation_name": "Chine",
+    "competitor": "Athlète Démo C",
+    "rank": 3,
+    "performance": "10,34 s"
+  },
+  {
+    "id": "b0000000-0000-4000-8000-000000000004",
+    "event_id": "a0000000-0000-4000-8000-000000000001",
+    "nation_code": "fr",
+    "nation_name": "France",
+    "competitor": "Athlète Démo D",
+    "mention": "disqualified"
+  },
+  {
+    "id": "b0000000-0000-4000-8000-000000000005",
+    "event_id": "a0000000-0000-4000-8000-000000000001",
+    "nation_code": "br",
+    "nation_name": "Brésil",
+    "competitor": "Athlète Démo E",
+    "mention": "did-not-finish"
+  },
+  {
+    "id": "b0000000-0000-4000-8000-000000000006",
+    "event_id": "a0000000-0000-4000-8000-000000000003",
+    "nation_code": "no",
+    "nation_name": "Norvège",
+    "competitor": "Cycliste Démo A",
+    "rank": 1,
+    "performance": "2 h 04 min 11 s"
+  },
+  {
+    "id": "b0000000-0000-4000-8000-000000000007",
+    "event_id": "a0000000-0000-4000-8000-000000000003",
+    "nation_code": "gb",
+    "nation_name": "Grande-Bretagne",
+    "competitor": "Cycliste Démo B",
+    "rank": 2,
+    "performance": "2 h 04 min 13 s"
+  },
+  {
+    "id": "b0000000-0000-4000-8000-000000000008",
+    "event_id": "a0000000-0000-4000-8000-000000000003",
+    "nation_code": "cz",
+    "nation_name": "République tchèque",
+    "competitor": "Cycliste Démo C",
+    "rank": 3,
+    "performance": "2 h 04 min 20 s"
+  },
+  {
+    "id": "b0000000-0000-4000-8000-000000000009",
+    "event_id": "a0000000-0000-4000-8000-000000000004",
+    "nation_code": "no",
+    "nation_name": "Norvège",
+    "competitor": "Équipe de Norvège",
+    "rank": 1,
+    "performance": "2 sets à 0"
+  },
+  {
+    "id": "b0000000-0000-4000-8000-000000000010",
+    "event_id": "a0000000-0000-4000-8000-000000000004",
+    "nation_code": "fr",
+    "nation_name": "France",
+    "competitor": "Équipe de France",
+    "rank": 2,
+    "performance": "0 set à 2"
+  },
+  {
+    "id": "b0000000-0000-4000-8000-000000000011",
+    "event_id": "a0000000-0000-4000-8000-000000000006",
+    "nation_code": "jp",
+    "nation_name": "Japon",
+    "competitor": "Judoka Démo A",
+    "rank": 1,
+    "performance": "Ippon"
+  },
+  {
+    "id": "b0000000-0000-4000-8000-000000000012",
+    "event_id": "a0000000-0000-4000-8000-000000000006",
+    "nation_code": "sn",
+    "nation_name": "Sénégal",
+    "competitor": "Judoka Démo B",
+    "rank": 2,
+    "performance": "Battu en finale"
+  },
+  {
+    "id": "b0000000-0000-4000-8000-000000000013",
+    "event_id": "a0000000-0000-4000-8000-000000000008",
+    "nation_code": "fr",
+    "nation_name": "France",
+    "competitor": "Véliplanchiste Démo A",
+    "rank": 1,
+    "performance": "1 point"
+  },
+  {
+    "id": "b0000000-0000-4000-8000-000000000014",
+    "event_id": "a0000000-0000-4000-8000-000000000008",
+    "nation_code": "sn",
+    "nation_name": "Sénégal",
+    "competitor": "Véliplanchiste Démo B",
+    "rank": 2,
+    "performance": "2 points"
+  }
+]
