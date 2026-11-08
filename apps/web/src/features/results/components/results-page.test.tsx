@@ -1,0 +1,103 @@
+/**
+ * La page /resultats, montée par sa vraie route sur la fausse API (`mocks/handlers.ts`) : choix
+ * du jour et du sport, classement d'une épreuve terminée, et états sans classement.
+ */
+import { screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it } from 'vitest';
+import { renderRoute } from '@/test/utils';
+import { defaultDay } from './default-day';
+
+async function open(search = 'date=2026-11-08') {
+  const user = userEvent.setup();
+  await renderRoute({ initialEntries: [`/resultats?${search}`] });
+  return user;
+}
+
+const eventCard = (name: string) => screen.findByRole('article', { name });
+
+async function rankingRows(eventName: string) {
+  const rows = within(await eventCard(eventName)).getAllByRole('row');
+  return rows.slice(1).map((row) =>
+    within(row)
+      .getAllByRole('cell')
+      .map((cell) => cell.textContent),
+  );
+}
+
+describe('ResultsPage', () => {
+  it('001-AS1: shows the events of the chosen day, grouped by sport', async () => {
+    const user = await open('date=2026-11-07');
+    await screen.findByRole('region', { name: 'Judo' });
+
+    await user.click(screen.getByRole('link', { name: '8 nov.' }));
+
+    const athletics = await screen.findByRole('region', { name: 'Athlétisme' });
+    expect(screen.getByRole('region', { name: 'Futsal' })).toBeInTheDocument();
+    expect(screen.queryByRole('region', { name: 'Judo' })).not.toBeInTheDocument();
+    const final = within(athletics).getByRole('article', { name: '100 m hommes, finale' });
+    expect(final).toHaveTextContent('18h32');
+    expect(final).toHaveTextContent('Terminé');
+  });
+
+  it('001-AS1: opens on today during the Games, otherwise on the first day', () => {
+    expect(defaultDay(new Date('2026-11-08T12:00:00.000Z'))).toBe('2026-11-08');
+    expect(defaultDay(new Date('2026-10-01T12:00:00.000Z'))).toBe('2026-10-31');
+    expect(defaultDay(new Date('2026-12-01T12:00:00.000Z'))).toBe('2026-10-31');
+  });
+
+  it('001-AS2: choosing a sport keeps only that group', async () => {
+    const user = await open();
+    await screen.findByRole('region', { name: 'Futsal' });
+
+    await user.selectOptions(screen.getByLabelText('Sport'), 'Athlétisme');
+
+    await waitFor(() =>
+      expect(screen.queryByRole('region', { name: 'Futsal' })).not.toBeInTheDocument(),
+    );
+    expect(screen.getByRole('region', { name: 'Athlétisme' })).toBeInTheDocument();
+  });
+
+  it('001-AS3: a finished event shows its ranking from first to last', async () => {
+    await open();
+
+    const rows = await rankingRows('100 m hommes, finale');
+
+    expect(rows[0]).toEqual(['1', 'Kenya', 'Gift Bright', '10,28 s']);
+    expect(rows[1]).toEqual(['2', 'Chine', 'Hangyu Zhang', '10,31 s']);
+    expect(await eventCard('100 m hommes, finale')).toHaveTextContent('Terminé');
+  });
+
+  it('001-AS4: events not finished show their status, without ranking', async () => {
+    await open();
+
+    const inProgress = await eventCard('Saut en longueur femmes, finale');
+    const scheduled = await eventCard('Hommes, demi-finale');
+
+    expect(inProgress).toHaveTextContent('En cours');
+    expect(scheduled).toHaveTextContent('Programmé');
+    expect(within(inProgress).queryByRole('table')).not.toBeInTheDocument();
+    expect(within(scheduled).queryByRole('table')).not.toBeInTheDocument();
+  });
+
+  it('001-AS5: a mention replaces the performance, without rank, after the ranked athletes', async () => {
+    await open();
+
+    const rows = await rankingRows('100 m hommes, finale');
+
+    expect(rows[2]).toEqual(['', 'France', 'Athlète Disqualifié', 'Disqualifié']);
+    expect(rows[3]).toEqual(['', 'Brésil', 'Athlète Abandon', "N'a pas terminé"]);
+  });
+
+  it('001-AS6: shows a message when the day and the sport have no event', async () => {
+    await open('date=2026-11-08&sport=voile');
+
+    expect(await screen.findByText('Aucune épreuve pour ce jour et ce sport')).toBeInTheDocument();
+  });
+
+  it('001-AS7: flags the demonstration data', async () => {
+    await open();
+
+    expect(await screen.findByText('Données de démonstration')).toBeInTheDocument();
+  });
+});

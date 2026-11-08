@@ -3,25 +3,26 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Couleurs relevées sur la maquette apps/web/public/design.png. */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --background: #fcfcfe;
+  --foreground: #11243f;
+  --card: #ffffff;
+  --card-foreground: #11243f;
+  --popover: #ffffff;
+  --popover-foreground: #11243f;
+  --primary: #07834b;
+  --primary-foreground: #ffffff;
+  --secondary: #eef0f3;
+  --secondary-foreground: #11243f;
+  --muted: #eef0f3;
+  --muted-foreground: #4a5568;
+  --accent: #e8f7db;
+  --accent-foreground: #11243f;
+  --destructive: #dc1b37;
+  --border: #e3e6ea;
+  --input: #e3e6ea;
+  --ring: #07834b;
   --radius: 0.625rem;
 }
 
@@ -47,6 +48,13 @@
 }
 
 @theme inline {
+  --color-joj-green: #07834b;
+  --color-joj-yellow: #fabb09;
+  --color-joj-red: #dc1b37;
+  --color-joj-pale-yellow: #fdefc4;
+  --color-joj-pale-red: #fcdbdf;
+  --color-medal-silver: #c9ced6;
+  --color-medal-bronze: #e59a5b;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
