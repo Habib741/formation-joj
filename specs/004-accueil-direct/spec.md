@@ -1,6 +1,6 @@
 # 004 — Accueil et direct
 
-**Statut** : Validée
+**Statut** : Implémentée
 **PRD** : specs/prd-jojpulse.md, TR4
 
 ## Contexte
