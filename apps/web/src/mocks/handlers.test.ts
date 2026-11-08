@@ -2,7 +2,12 @@
  * La fausse API tient le même contrat que apps/api : si elle s'en écarte, les tests du front
  * passent contre une API qui n'existe pas. Ces tests l'appellent avec `fetch`, sans React.
  */
-import { medalListSchema, nationStandingListSchema, sportEventListSchema } from '@joj/shared';
+import {
+  medalListSchema,
+  nationAthleteListSchema,
+  nationStandingListSchema,
+  sportEventListSchema,
+} from '@joj/shared';
 import { describe, expect, it } from 'vitest';
 
 const results = async (query: string) => {
@@ -103,5 +108,58 @@ describe('mock medals API', () => {
 
     expect(status).toBe(200);
     expect(body).toEqual([]);
+  });
+});
+
+const resultsPath = async (path: string) => {
+  const response = await fetch(`http://localhost/api/results${path}`);
+  return { status: response.status, body: (await response.json()) as unknown };
+};
+
+describe('mock calendar and delegation API', () => {
+  it('003-AS1: the calendar returns only the scheduled events of the day', async () => {
+    const { status, body } = await resultsPath('/calendar?date=2026-11-08');
+
+    expect(status).toBe(200);
+    expect(sportEventListSchema.parse(body).map((event) => event.name)).toEqual([
+      'Hommes, demi-finale',
+    ]);
+  });
+
+  it('003-AS2: the calendar keeps only the chosen sport', async () => {
+    const { body } = await resultsPath('/calendar?date=2026-11-09&sport=natation');
+
+    expect(sportEventListSchema.parse(body).map((event) => event.sport)).toEqual(['natation']);
+  });
+
+  it('003-AS5: the results keep only the events of the chosen nation', async () => {
+    const { status, body } = await resultsPath('?date=2026-11-10&nation=sn');
+
+    expect(status).toBe(200);
+    expect(sportEventListSchema.parse(body).map((event) => event.name)).toEqual([
+      '100 m hommes, finale',
+      'Hommes, finale',
+    ]);
+  });
+
+  it('003-AS6: returns the athletes of the nation for the day', async () => {
+    const { status, body } = await resultsPath('/athletes?date=2026-11-10&nation=sn');
+
+    expect(status).toBe(200);
+    expect(
+      nationAthleteListSchema
+        .parse(body)
+        .map(({ competitor, status: eventStatus }) => [competitor, eventStatus]),
+    ).toEqual([
+      ['Awa Diop', 'finished'],
+      ['Équipe du Sénégal', 'scheduled'],
+    ]);
+  });
+
+  it('003-AS6: rejects a badly written nation with a 400 VALIDATION_FAILED problem', async () => {
+    const { status, body } = await resultsPath('/athletes?date=2026-11-10&nation=senegal');
+
+    expect(status).toBe(400);
+    expect(body).toMatchObject({ status: 400, code: 'VALIDATION_FAILED' });
   });
 });

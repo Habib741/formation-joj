@@ -71,6 +71,12 @@ export const futsalSemiFinal: SportEventResponse = {
   ranking: [],
 };
 
+export interface FixtureParticipant {
+  eventId: string;
+  nationCode: string;
+  competitor: string;
+}
+
 export const judoFinal: SportEventResponse = {
   id: '0199f5c2-0000-7000-8000-000000000004',
   sport: 'judo',
@@ -79,6 +85,90 @@ export const judoFinal: SportEventResponse = {
   status: 'scheduled',
   ranking: [],
 };
+
+const SWIMMING_ID = '0199f5c2-0000-7000-8000-000000000005';
+const JUDO_LATER_ID = '0199f5c2-0000-7000-8000-000000000006';
+const NATION_SPRINT_ID = '0199f5c2-0000-7000-8000-000000000007';
+const NATION_ROAD_ID = '0199f5c2-0000-7000-8000-000000000008';
+const NATION_FUTSAL_ID = '0199f5c2-0000-7000-8000-000000000009';
+
+/** Le 9 novembre illustre le calendrier, le 10 novembre le suivi d'une nation. */
+const followingDays: SportEventResponse[] = [
+  {
+    id: SWIMMING_ID,
+    sport: 'natation',
+    name: '100 m nage libre femmes, finale',
+    startsAt: '2026-11-09T18:00:00.000Z',
+    status: 'scheduled',
+    ranking: [],
+  },
+  {
+    id: JUDO_LATER_ID,
+    sport: 'judo',
+    name: '+73 kg femmes, finale',
+    startsAt: '2026-11-09T10:00:00.000Z',
+    status: 'scheduled',
+    ranking: [],
+  },
+  {
+    id: NATION_SPRINT_ID,
+    sport: 'athletisme',
+    name: '100 m hommes, finale',
+    startsAt: '2026-11-10T09:00:00.000Z',
+    status: 'finished',
+    ranking: [
+      {
+        rank: 1,
+        nationCode: 'ke',
+        nationName: 'Kenya',
+        competitor: 'Gift Bright',
+        performance: '10,28 s',
+        mention: null,
+      },
+      {
+        rank: 2,
+        nationCode: 'sn',
+        nationName: 'Sénégal',
+        competitor: 'Awa Diop',
+        performance: '10,31 s',
+        mention: null,
+      },
+    ],
+  },
+  {
+    id: NATION_ROAD_ID,
+    sport: 'cyclisme-sur-route',
+    name: 'Course en ligne femmes',
+    startsAt: '2026-11-10T10:00:00.000Z',
+    status: 'finished',
+    ranking: [
+      {
+        rank: 1,
+        nationCode: 'no',
+        nationName: 'Norvège',
+        competitor: 'Cycliste Norvège',
+        performance: '2 h 10',
+        mention: null,
+      },
+    ],
+  },
+  {
+    id: NATION_FUTSAL_ID,
+    sport: 'futsal',
+    name: 'Hommes, finale',
+    startsAt: '2026-11-10T20:30:00.000Z',
+    status: 'scheduled',
+    ranking: [],
+  },
+];
+
+/** Les participants du 10 novembre, y compris ceux d'une épreuve qui n'a pas encore de classement. */
+const participants: FixtureParticipant[] = [
+  { eventId: NATION_SPRINT_ID, nationCode: 'ke', competitor: 'Gift Bright' },
+  { eventId: NATION_SPRINT_ID, nationCode: 'sn', competitor: 'Awa Diop' },
+  { eventId: NATION_ROAD_ID, nationCode: 'no', competitor: 'Cycliste Norvège' },
+  { eventId: NATION_FUTSAL_ID, nationCode: 'sn', competitor: 'Équipe du Sénégal' },
+];
 
 /** Le classement est déjà calculé : c'est l'API qui en porte les règles, testées de son côté. */
 const nationStandings: NationStandingResponse[] = [
@@ -160,8 +250,16 @@ const initial = (): {
   sportEvents: SportEventResponse[];
   nationStandings: NationStandingResponse[];
   medals: MedalResponse[];
+  participants: FixtureParticipant[];
 } => ({
-  sportEvents: [{ ...futsalSemiFinal }, { ...longJump }, { ...sprintFinal }, { ...judoFinal }],
+  sportEvents: [
+    { ...futsalSemiFinal },
+    { ...longJump },
+    { ...sprintFinal },
+    { ...judoFinal },
+    ...followingDays.map((event) => ({ ...event })),
+  ],
+  participants: participants.map((participant) => ({ ...participant })),
   nationStandings: nationStandings.map((line) => ({ ...line })),
   medals: medals.map((medal) => ({ ...medal })),
 });

@@ -1,8 +1,12 @@
 import {
+  calendarQuerySchema,
   dayResultsQuerySchema,
   medalsQuerySchema,
+  nationAthletesQuerySchema,
   nationStandingsQuerySchema,
   type ProblemDetails,
+  type SportEventResponse,
+  type SportSlug,
 } from '@joj/shared';
 import { delay, http, HttpResponse, type RequestHandler } from 'msw';
 import type { z } from 'zod';
@@ -54,6 +58,14 @@ export function validationFailed(error: z.ZodError) {
   });
 }
 
+/** Les épreuves d'un jour, éventuellement d'un seul sport, triées par sport puis par heure. */
+function eventsOfDay(date: string, sport?: SportSlug): SportEventResponse[] {
+  return fixture.sportEvents
+    .filter((event) => event.startsAt.startsWith(date))
+    .filter((event) => sport === undefined || event.sport === sport)
+    .toSorted((a, b) => a.sport.localeCompare(b.sport) || a.startsAt.localeCompare(b.startsAt));
+}
+
 export const handlers: RequestHandler[] = [
   http.get('*/api/results', async ({ request }) => {
     const failure = await gate('GET', '/api/results');
@@ -61,12 +73,55 @@ export const handlers: RequestHandler[] = [
     const query = Object.fromEntries(new URL(request.url).searchParams);
     const parsed = dayResultsQuerySchema.safeParse(query);
     if (!parsed.success) return validationFailed(parsed.error);
+    const { date, sport, nation } = parsed.data;
+    return HttpResponse.json(
+      eventsOfDay(date, sport).filter(
+        (event) =>
+          nation === undefined ||
+          fixture.participants.some(
+            (participant) => participant.eventId === event.id && participant.nationCode === nation,
+          ),
+      ),
+    );
+  }),
+
+  http.get('*/api/results/calendar', async ({ request }) => {
+    const failure = await gate('GET', '/api/results/calendar');
+    if (failure) return failure;
+    const query = Object.fromEntries(new URL(request.url).searchParams);
+    const parsed = calendarQuerySchema.safeParse(query);
+    if (!parsed.success) return validationFailed(parsed.error);
     const { date, sport } = parsed.data;
     return HttpResponse.json(
-      fixture.sportEvents
-        .filter((event) => event.startsAt.startsWith(date))
-        .filter((event) => sport === undefined || event.sport === sport)
-        .toSorted((a, b) => a.sport.localeCompare(b.sport) || a.startsAt.localeCompare(b.startsAt)),
+      eventsOfDay(date, sport).filter((event) => event.status === 'scheduled'),
+    );
+  }),
+
+  http.get('*/api/results/athletes', async ({ request }) => {
+    const failure = await gate('GET', '/api/results/athletes');
+    if (failure) return failure;
+    const query = Object.fromEntries(new URL(request.url).searchParams);
+    const parsed = nationAthletesQuerySchema.safeParse(query);
+    if (!parsed.success) return validationFailed(parsed.error);
+    const { date, nation } = parsed.data;
+    return HttpResponse.json(
+      eventsOfDay(date)
+        .flatMap((event) =>
+          fixture.participants
+            .filter(({ eventId, nationCode }) => eventId === event.id && nationCode === nation)
+            .map(({ competitor }) => ({
+              competitor,
+              eventId: event.id,
+              eventName: event.name,
+              sport: event.sport,
+              startsAt: event.startsAt,
+              status: event.status,
+            })),
+        )
+        .toSorted(
+          (a, b) =>
+            a.startsAt.localeCompare(b.startsAt) || a.competitor.localeCompare(b.competitor, 'fr'),
+        ),
     );
   }),
 
