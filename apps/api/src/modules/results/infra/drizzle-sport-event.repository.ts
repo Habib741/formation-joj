@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { SportSlug } from '@joj/shared';
-import { and, asc, eq, gte, inArray, lt } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, inArray, lt } from 'drizzle-orm';
 import type { Database } from '../../../core/database/database';
 import { DATABASE } from '../../../core/database/database.module';
 import { SportEventRepository } from '../application/sport-event.repository';
 import type { SportEvent } from '../domain/sport-event';
-import { sportEventEntries, sportEvents } from './results.schema';
+import { sportEventEntries, type SportEventRow, sportEvents } from './results.schema';
 import { toDomain } from './sport-event.mapper';
 
 const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
@@ -31,6 +31,29 @@ export class DrizzleSportEventRepository extends SportEventRepository {
         ),
       )
       .orderBy(asc(sportEvents.sport), asc(sportEvents.startsAt));
+    return this.withEntries(rows);
+  }
+
+  async listLatestFinished(limit: number): Promise<SportEvent[]> {
+    const rows = await this.db
+      .select()
+      .from(sportEvents)
+      .where(and(eq(sportEvents.status, 'finished'), eq(sportEvents.awardsMedals, true)))
+      .orderBy(desc(sportEvents.startsAt))
+      .limit(limit);
+    return this.withEntries(rows);
+  }
+
+  async listInProgress(): Promise<SportEvent[]> {
+    const rows = await this.db
+      .select()
+      .from(sportEvents)
+      .where(eq(sportEvents.status, 'in-progress'))
+      .orderBy(asc(sportEvents.startsAt), asc(sportEvents.sport));
+    return this.withEntries(rows);
+  }
+
+  private async withEntries(rows: SportEventRow[]): Promise<SportEvent[]> {
     if (rows.length === 0) return [];
 
     const entryRows = await this.db
@@ -48,13 +71,5 @@ export class DrizzleSportEventRepository extends SportEventRepository {
         entryRows.filter((entry) => entry.eventId === row.id),
       ),
     );
-  }
-
-  listLatestFinished(_limit: number): Promise<SportEvent[]> {
-    throw new Error('non implémenté');
-  }
-
-  listInProgress(): Promise<SportEvent[]> {
-    throw new Error('non implémenté');
   }
 }

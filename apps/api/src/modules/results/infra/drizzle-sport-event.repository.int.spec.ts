@@ -100,4 +100,56 @@ describe('DrizzleSportEventRepository (in-memory PGlite, migrations applied)', (
       }),
     ).rejects.toThrow('Failed query');
   });
+
+  describe('latest results and live events', () => {
+    const finalIds = [randomUUID(), randomUUID(), randomUUID(), randomUUID()];
+    const event = (
+      id: string,
+      name: string,
+      status: string,
+      startsAt: string,
+      awardsMedals: boolean,
+    ) => ({ id, sport: 'judo', name, status, awardsMedals, startsAt: new Date(startsAt) });
+
+    beforeAll(async () => {
+      await connection.db
+        .insert(sportEvents)
+        .values([
+          event(finalIds[0] ?? '', 'Finale 1', 'finished', '2026-11-10T09:00:00.000Z', true),
+          event(finalIds[1] ?? '', 'Finale 2', 'finished', '2026-11-11T09:00:00.000Z', true),
+          event(finalIds[2] ?? '', 'Finale 3', 'finished', '2026-11-12T09:00:00.000Z', true),
+          event(finalIds[3] ?? '', 'Finale 4', 'finished', '2026-11-12T18:00:00.000Z', true),
+          event(randomUUID(), 'Manche', 'finished', '2026-11-13T09:00:00.000Z', false),
+          event(randomUUID(), 'En cours tard', 'in-progress', '2026-11-13T12:00:00.000Z', true),
+          event(randomUUID(), 'En cours tôt', 'in-progress', '2026-11-13T10:00:00.000Z', false),
+          event(randomUUID(), 'Programmée', 'scheduled', '2026-11-13T15:00:00.000Z', true),
+        ]);
+      await connection.db.insert(sportEventEntries).values({
+        id: randomUUID(),
+        eventId: finalIds[3] ?? '',
+        nationCode: 'jp',
+        nationName: 'Japon',
+        competitor: 'Judoka Japon',
+        rank: 1,
+        performance: 'Ippon',
+      });
+    });
+
+    it('004-AS3: reads the latest finished events that award medals, with their ranking', async () => {
+      const found = await repository.listLatestFinished(3);
+
+      expect(found.map((sportEvent) => sportEvent.name)).toEqual([
+        'Finale 4',
+        'Finale 3',
+        'Finale 2',
+      ]);
+      expect(found[0]?.ranking.map((entry) => entry.competitor)).toEqual(['Judoka Japon']);
+    });
+
+    it('004-AS6: reads only the events in progress, by time', async () => {
+      const found = await repository.listInProgress();
+
+      expect(found.map((sportEvent) => sportEvent.name)).toEqual(['En cours tôt', 'En cours tard']);
+    });
+  });
 });
