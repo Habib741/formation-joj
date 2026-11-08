@@ -42,11 +42,11 @@ export const sportEventEntries = pgTable(
   },
   (table) => [
     uniqueIndex('sport_event_entries_competitor_key').on(table.eventId, table.competitor),
-    // Une participation a soit un rang et une performance, soit une mention seule.
+    // Une participation a un rang et une performance, ou une mention seule, ou rien tant qu'elle n'est qu'inscrite.
     check(
       'sport_event_entries_rank_or_mention',
       sql`(${table.rank} IS NOT NULL AND ${table.performance} IS NOT NULL AND ${table.mention} IS NULL)
-        OR (${table.rank} IS NULL AND ${table.performance} IS NULL AND ${table.mention} IS NOT NULL)`,
+        OR (${table.rank} IS NULL AND ${table.performance} IS NULL)`,
     ),
   ],
 );

@@ -5,9 +5,10 @@ import { DrizzleSportEventRepository } from './drizzle-sport-event.repository';
 import { sportEventEntries, sportEvents } from './results.schema';
 
 const finalId = randomUUID();
+const scheduledId = randomUUID();
 
 const events = [
-  ['futsal', 'Demi-finale', '2026-11-08T09:00:00.000Z', randomUUID()],
+  ['futsal', 'Demi-finale', '2026-11-08T09:00:00.000Z', scheduledId],
   ['athletisme', '100 m hommes, finale', '2026-11-08T18:32:00.000Z', finalId],
   ['athletisme', '3 000 m', '2026-11-08T00:00:00.000Z', randomUUID()],
   ['athletisme', 'Veille', '2026-11-07T23:59:59.999Z', randomUUID()],
@@ -69,5 +70,34 @@ describe('DrizzleSportEventRepository (in-memory PGlite, migrations applied)', (
     const found = await repository.listByDay('2026-11-08', 'athletisme');
 
     expect(found.map((event) => event.sport)).toEqual(['athletisme', 'athletisme']);
+  });
+
+  it('003-AS6: saves and reads a participant registered without a result', async () => {
+    await connection.db.insert(sportEventEntries).values({
+      id: randomUUID(),
+      eventId: scheduledId,
+      nationCode: 'sn',
+      nationName: 'Sénégal',
+      competitor: 'Équipe du Sénégal',
+    });
+
+    const found = await repository.listByDay('2026-11-08', 'futsal');
+
+    expect(found[0]?.athletesOf('sn').map((athlete) => athlete.competitor)).toEqual([
+      'Équipe du Sénégal',
+    ]);
+  });
+
+  it('003-AS6: still refuses a rank without a performance', async () => {
+    await expect(
+      connection.db.insert(sportEventEntries).values({
+        id: randomUUID(),
+        eventId: scheduledId,
+        nationCode: 'br',
+        nationName: 'Brésil',
+        competitor: 'Équipe du Brésil',
+        rank: 1,
+      }),
+    ).rejects.toThrow('Failed query');
   });
 });

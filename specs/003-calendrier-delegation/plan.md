@@ -99,7 +99,7 @@ Six tâches, dans l'ordre des couches. Chaque tâche nomme le test à écrire d'
 
 - [x] T01 [003-AS5, AS6] Écrire d'abord les tests dans `domain/sport-event.spec.ts` (« 003-AS5: … », « 003-AS6: … »), puis les schémas partagés, `hasParticipantFrom`, `athletesOf` et le `ranking` qui écarte les participants inscrits
 - [x] T02 [003-AS1, AS2, AS5, AS6] Écrire d'abord les tests dans `application/results.application.spec.ts` (« 003-AS1: … », « 003-AS2: … », « 003-AS5: … », « 003-AS6: … »), puis `ListDayCalendar`, `ListNationAthletes` et le filtre `nation` de `ListDayResults`
-- [ ] T03 [003-AS6] Écrire d'abord le test dans `infra/drizzle-sport-event.repository.int.spec.ts` (« 003-AS6: … »), puis la contrainte assouplie et la migration générée
+- [x] T03 [003-AS6] Écrire d'abord le test dans `infra/drizzle-sport-event.repository.int.spec.ts` (« 003-AS6: … »), puis la contrainte assouplie et la migration générée
 - [ ] T04 [003-AS1, AS5, AS6] Écrire d'abord les tests dans `apps/api/test/results.e2e.spec.ts` (« 003-AS1: … », « 003-AS5: … », « 003-AS6: … »), puis les routes du controller, le module et le jeu de démonstration
 - [ ] T05 [003-AS1, AS2, AS5, AS6] Écrire d'abord les tests des routes dans `apps/web/src/mocks/handlers.test.ts` (« 003-AS1: … », « 003-AS2: … », « 003-AS5: … », « 003-AS6: … »), puis la fausse API, `calendar.api.ts`, `calendar.queries.ts` et les appels de `results.api.ts`
 - [ ] T06 [003-AS1, AS2, AS3, AS4, AS5, AS6, AS7] Écrire d'abord `calendar/components/calendar-page.test.tsx`, `calendar/components/event-time.test.ts`, les tests de `results/components/results-page.test.tsx` (un test par scénario) et `routes/calendrier.a11y.test.tsx`, puis les pages, leurs composants, la route et le lien du menu
