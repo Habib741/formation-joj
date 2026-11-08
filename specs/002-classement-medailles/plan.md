@@ -110,3 +110,7 @@ Six tâches, dans l'ordre des couches. Chaque tâche nomme le test à écrire d'
 ### Passage 1
 
 - [x] T07 [002-AS5] Écrire d'abord, dans `domain/nation-standings.spec.ts`, le test « 002-AS5: gives no medal type to a rank outside the podium » (`medalTypeForRank` rend `null` pour le rang 4), puis retirer le `throw` natif du domaine et laisser `infra/medal.mapper.ts` refuser une ligne sans type de médaille. Preuve : relecteur, `apps/api/src/modules/medals/domain/medal.ts:19` lève un `RangeError` hors `infra/`, sans code stable ni catégorie.
+
+### Passage 2
+
+- [ ] T08 [002-AS1] Écrire d'abord `apps/web/src/routes/medailles.assets.test.ts` (« 002-AS1: the design mock-up is not served with the site »), puis déplacer `apps/web/public/design.png` vers `specs/assets/design.png`, le commiter et mettre à jour `apps/web/src/styles.css:6` et `specs/prd-jojpulse.md:17`. Cette correction est aussi la T07 du plan 001, à cocher en même temps. Preuve : relecteur, `apps/web/public/design.png` non suivi et hors du plan 002.
