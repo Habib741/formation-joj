@@ -103,5 +103,5 @@ Six tâches, dans l'ordre des couches. Chaque tâche nomme le test à écrire d'
 - [x] T02 [001-AS1] Écrire d'abord `application/results.application.spec.ts` (« 001-AS1: … »), puis le port, le repository en mémoire et `ListDayResults`
 - [x] T03 [001-AS1, AS2] Écrire d'abord `infra/drizzle-sport-event.repository.int.spec.ts` (« 001-AS1: … », « 001-AS2: … »), puis les tables, la migration générée, le mapper et le repository Drizzle
 - [x] T04 [001-AS2, AS3] Écrire d'abord `apps/api/test/results.e2e.spec.ts` (« 001-AS2: … », « 001-AS3: … »), puis le controller, le module, son ajout à `app.module.ts` et le jeu de démonstration
-- [ ] T05 [001-AS1, AS2] Écrire d'abord le test de la route dans `apps/web/src/mocks/handlers.test.ts` (« 001-AS1: … », « 001-AS2: … »), puis la fausse API, `results.api.ts` et `results.queries.ts`
+- [x] T05 [001-AS1, AS2] Écrire d'abord le test de la route dans `apps/web/src/mocks/handlers.test.ts` (« 001-AS1: … », « 001-AS2: … »), puis la fausse API, `results.api.ts` et `results.queries.ts`
 - [ ] T06 [001-AS1, AS2, AS3, AS4, AS5, AS6, AS7] Écrire d'abord `components/results-page.test.tsx` (un test par scénario) et `routes/resultats.a11y.test.tsx`, puis la page, ses composants, la route, l'en-tête et les couleurs de la maquette

@@ -1,7 +1,8 @@
-import type { ProblemDetails } from '@joj/shared';
-import { delay, HttpResponse, type RequestHandler } from 'msw';
+import { dayResultsQuerySchema, type ProblemDetails } from '@joj/shared';
+import { delay, http, HttpResponse, type RequestHandler } from 'msw';
 import type { z } from 'zod';
 import { mockControl } from './control';
+import { fixture } from './fixture';
 
 /**
  * La fausse API des tests du front : le même contrat que apps/api (mêmes schémas zod, mêmes
@@ -48,4 +49,19 @@ export function validationFailed(error: z.ZodError) {
   });
 }
 
-export const handlers: RequestHandler[] = [];
+export const handlers: RequestHandler[] = [
+  http.get('*/api/results', async ({ request }) => {
+    const failure = await gate('GET', '/api/results');
+    if (failure) return failure;
+    const query = Object.fromEntries(new URL(request.url).searchParams);
+    const parsed = dayResultsQuerySchema.safeParse(query);
+    if (!parsed.success) return validationFailed(parsed.error);
+    const { date, sport } = parsed.data;
+    return HttpResponse.json(
+      fixture.sportEvents
+        .filter((event) => event.startsAt.startsWith(date))
+        .filter((event) => sport === undefined || event.sport === sport)
+        .toSorted((a, b) => a.sport.localeCompare(b.sport) || a.startsAt.localeCompare(b.startsAt)),
+    );
+  }),
+];
