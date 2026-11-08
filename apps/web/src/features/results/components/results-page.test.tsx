@@ -38,6 +38,11 @@ describe('ResultsPage', () => {
     const final = within(athletics).getByRole('article', { name: '100 m hommes, finale' });
     expect(final).toHaveTextContent('18h32');
     expect(final).toHaveTextContent('Terminé');
+    const semiFinal = within(screen.getByRole('region', { name: 'Futsal' })).getByRole('article', {
+      name: 'Hommes, demi-finale',
+    });
+    expect(semiFinal).toHaveTextContent('20h30');
+    expect(semiFinal).toHaveTextContent('Programmé');
   });
 
   it('001-AS1: opens on today during the Games, otherwise on the first day', () => {
