@@ -100,7 +100,7 @@ Six tâches, dans l'ordre des couches. Chaque tâche nomme le test à écrire d'
 
 - [x] T01 [002-AS1, AS2, AS6] Écrire d'abord `domain/nation-standings.spec.ts` (« 002-AS1: … », « 002-AS2: … », « 002-AS6: … »), puis `packages/shared/src/medals.ts`, l'entité `Medal` et `buildNationStandings`
 - [x] T02 [002-AS3, AS7] Écrire d'abord `application/medals.application.spec.ts` (« 002-AS3: … », « 002-AS7: … »), puis le port, le repository en mémoire, `ListNationStandings` et `ListMedals`
-- [ ] T03 [002-AS5, AS6] Écrire d'abord `infra/drizzle-medal.repository.int.spec.ts` (« 002-AS5: … », « 002-AS6: … »), puis la table `nations`, la migration générée, le mapper et le repository Drizzle
+- [x] T03 [002-AS5, AS6] Écrire d'abord `infra/drizzle-medal.repository.int.spec.ts` (« 002-AS5: … », « 002-AS6: … »), puis la table `nations`, la migration générée, le mapper et le repository Drizzle
 - [ ] T04 [002-AS1, AS3, AS7] Écrire d'abord `apps/api/test/medals.e2e.spec.ts` et `infra/demo-data.spec.ts` (« 002-AS1: … », « 002-AS3: … », « 002-AS7: … »), puis le controller, le module, son ajout à `app.module.ts` et `03-nations.json`
 - [ ] T05 [002-AS1, AS3, AS5, AS7] Écrire d'abord les tests des routes dans `apps/web/src/mocks/handlers.test.ts` (« 002-AS1: … », « 002-AS3: … », « 002-AS5: … », « 002-AS7: … »), puis la fausse API, `medals.api.ts` et `medals.queries.ts`
 - [ ] T06 [002-AS1, AS3, AS4, AS5, AS6, AS7] Écrire d'abord `components/medals-page.test.tsx` (un test par scénario) et `routes/medailles.a11y.test.tsx`, puis la page, ses composants, la route et le lien du menu
