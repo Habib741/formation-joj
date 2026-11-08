@@ -46,6 +46,14 @@ describe('ResultsPage', () => {
     expect(defaultDay(new Date('2026-12-01T12:00:00.000Z'))).toBe('2026-10-31');
   });
 
+  it('001-AS1: ignores a day outside the Games in the address', async () => {
+    await open('date=9999-12-31');
+
+    const title = await screen.findByRole('heading', { level: 1 });
+    expect(title).toHaveTextContent(/2026/);
+    expect(screen.queryByText('Impossible de charger les résultats.')).not.toBeInTheDocument();
+  });
+
   it('001-AS2: choosing a sport keeps only that group', async () => {
     const user = await open();
     await screen.findByRole('region', { name: 'Futsal' });

@@ -47,6 +47,24 @@ describe('/api/results (e2e)', () => {
 
   afterAll(() => app?.close());
 
+  it.each(['0000-01-01', '9999-12-31', '2026-10-30', '2026-11-14'])(
+    '001-AS1: rejects a day outside the Games (400, RFC 9457): %s',
+    async (date) => {
+      const response = await api().get('/api/results').query({ date }).expect(400);
+
+      expect(response.body).toMatchObject({ status: 400, code: 'VALIDATION_FAILED' });
+    },
+  );
+
+  it.each(['2026-10-31', '2026-11-13'])(
+    '001-AS1: accepts the first and last days of the Games: %s',
+    async (date) => {
+      const response = await api().get('/api/results').query({ date });
+
+      expect(response.status).toBe(200);
+    },
+  );
+
   it('001-AS2: applies the sport filter', async () => {
     const response = await api()
       .get('/api/results')

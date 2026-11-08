@@ -22,6 +22,13 @@ describe('mock results API', () => {
     ]);
   });
 
+  it('001-AS1: rejects a day outside the Games with a 400 VALIDATION_FAILED problem', async () => {
+    const { status, body } = await results('date=9999-12-31');
+
+    expect(status).toBe(400);
+    expect(body).toMatchObject({ status: 400, code: 'VALIDATION_FAILED' });
+  });
+
   it('001-AS2: keeps only the requested sport', async () => {
     const { body } = await results('date=2026-11-08&sport=futsal');
 

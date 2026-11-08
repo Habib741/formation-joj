@@ -44,9 +44,16 @@ export type RankingMention = z.infer<typeof rankingMentionSchema>;
 export const GAMES_FIRST_DAY = '2026-10-31';
 export const GAMES_LAST_DAY = '2026-11-13';
 
+/** Un jour des Jeux, au format AAAA-MM-JJ, qui se compare donc comme du texte. */
+export const gamesDaySchema = z.iso
+  .date()
+  .refine((day) => day >= GAMES_FIRST_DAY && day <= GAMES_LAST_DAY, {
+    error: 'The day must be within the Games.',
+  });
+
 /** Paramètres de `GET /api/results`. */
 export const dayResultsQuerySchema = z.object({
-  date: z.iso.date(),
+  date: gamesDaySchema,
   sport: sportSlugSchema.optional(),
 });
 export type DayResultsQuery = z.infer<typeof dayResultsQuerySchema>;
