@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { INestApplication } from '@nestjs/common';
-import { sportEventListSchema } from '@joj/shared';
+import { nationAthleteListSchema, sportEventListSchema } from '@joj/shared';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Database } from '../src/core/database/database';
@@ -10,6 +10,7 @@ import { createTestApp } from './create-test-app';
 
 const finalId = randomUUID();
 const scheduledId = randomUUID();
+const judoId = randomUUID();
 
 describe('/api/results (e2e)', () => {
   let app: INestApplication;
@@ -32,6 +33,40 @@ describe('/api/results (e2e)', () => {
         name: 'Demi-finale',
         status: 'scheduled',
         startsAt: new Date('2026-11-08T20:00:00.000Z'),
+      },
+      {
+        id: judoId,
+        sport: 'judo',
+        name: '-60 kg hommes, finale',
+        status: 'finished',
+        startsAt: new Date('2026-11-08T10:00:00.000Z'),
+      },
+    ]);
+    await db.insert(sportEventEntries).values([
+      {
+        id: randomUUID(),
+        eventId: scheduledId,
+        nationCode: 'sn',
+        nationName: 'Sénégal',
+        competitor: 'Équipe du Sénégal',
+      },
+      {
+        id: randomUUID(),
+        eventId: judoId,
+        nationCode: 'sn',
+        nationName: 'Sénégal',
+        competitor: 'Judoka Sénégal',
+        rank: 2,
+        performance: 'Ippon',
+      },
+      {
+        id: randomUUID(),
+        eventId: judoId,
+        nationCode: 'jp',
+        nationName: 'Japon',
+        competitor: 'Judoka Japon',
+        rank: 1,
+        performance: 'Ippon',
       },
     ]);
     await db.insert(sportEventEntries).values({
@@ -105,5 +140,62 @@ describe('/api/results (e2e)', () => {
         },
       ],
     });
+  });
+
+  it('003-AS1: the calendar returns only the scheduled events of the day', async () => {
+    const response = await api()
+      .get('/api/results/calendar')
+      .query({ date: '2026-11-08' })
+      .expect(200);
+
+    expect(sportEventListSchema.parse(response.body)).toEqual([
+      expect.objectContaining({ id: scheduledId, status: 'scheduled', ranking: [] }),
+    ]);
+  });
+
+  it('003-AS5: applies the nation filter and keeps the complete ranking', async () => {
+    const response = await api()
+      .get('/api/results')
+      .query({ date: '2026-11-08', nation: 'sn' })
+      .expect(200);
+
+    const events = sportEventListSchema.parse(response.body);
+    expect(events.map((event) => event.id)).toEqual([scheduledId, judoId]);
+    expect(events[1]?.ranking.map((entry) => entry.nationCode)).toEqual(['jp', 'sn']);
+  });
+
+  it('003-AS6: returns the athletes of the nation for the day', async () => {
+    const response = await api()
+      .get('/api/results/athletes')
+      .query({ date: '2026-11-08', nation: 'sn' })
+      .expect(200);
+
+    expect(nationAthleteListSchema.parse(response.body)).toEqual([
+      {
+        competitor: 'Judoka Sénégal',
+        eventId: judoId,
+        eventName: '-60 kg hommes, finale',
+        sport: 'judo',
+        startsAt: '2026-11-08T10:00:00.000Z',
+        status: 'finished',
+      },
+      {
+        competitor: 'Équipe du Sénégal',
+        eventId: scheduledId,
+        eventName: 'Demi-finale',
+        sport: 'futsal',
+        startsAt: '2026-11-08T20:00:00.000Z',
+        status: 'scheduled',
+      },
+    ]);
+  });
+
+  it('003-AS6: rejects a badly written nation (400, RFC 9457)', async () => {
+    const response = await api()
+      .get('/api/results/athletes')
+      .query({ date: '2026-11-08', nation: 'senegal' })
+      .expect(400);
+
+    expect(response.body).toMatchObject({ status: 400, code: 'VALIDATION_FAILED' });
   });
 });

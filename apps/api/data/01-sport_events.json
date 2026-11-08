@@ -62,5 +62,13 @@
     "status": "finished",
     "starts_at": "2026-10-31T11:00:00.000Z",
     "awards_medals": false
+  },
+  {
+    "id": "a0000000-0000-4000-8000-000000000009",
+    "sport": "judo",
+    "name": "+73 kg femmes, finale",
+    "status": "scheduled",
+    "starts_at": "2026-11-09T10:00:00.000Z",
+    "awards_medals": true
   }
 ]
