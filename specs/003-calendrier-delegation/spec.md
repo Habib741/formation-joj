@@ -1,6 +1,6 @@
 # 003 — Calendrier et suivi d'une délégation
 
-**Statut** : Validée
+**Statut** : Implémentée
 **PRD** : specs/prd-jojpulse.md, TR3
 
 ## Contexte
