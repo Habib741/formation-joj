@@ -1,4 +1,9 @@
-import { dayResultsQuerySchema, type ProblemDetails } from '@joj/shared';
+import {
+  dayResultsQuerySchema,
+  medalsQuerySchema,
+  nationStandingsQuerySchema,
+  type ProblemDetails,
+} from '@joj/shared';
 import { delay, http, HttpResponse, type RequestHandler } from 'msw';
 import type { z } from 'zod';
 import { mockControl } from './control';
@@ -62,6 +67,34 @@ export const handlers: RequestHandler[] = [
         .filter((event) => event.startsAt.startsWith(date))
         .filter((event) => sport === undefined || event.sport === sport)
         .toSorted((a, b) => a.sport.localeCompare(b.sport) || a.startsAt.localeCompare(b.startsAt)),
+    );
+  }),
+
+  http.get('*/api/medals/standings', async ({ request }) => {
+    const failure = await gate('GET', '/api/medals/standings');
+    if (failure) return failure;
+    const query = Object.fromEntries(new URL(request.url).searchParams);
+    const parsed = nationStandingsQuerySchema.safeParse(query);
+    if (!parsed.success) return validationFailed(parsed.error);
+    const { continent } = parsed.data;
+    return HttpResponse.json(
+      fixture.nationStandings.filter(
+        (standing) => continent === undefined || standing.continent === continent,
+      ),
+    );
+  }),
+
+  http.get('*/api/medals', async ({ request }) => {
+    const failure = await gate('GET', '/api/medals');
+    if (failure) return failure;
+    const query = Object.fromEntries(new URL(request.url).searchParams);
+    const parsed = medalsQuerySchema.safeParse(query);
+    if (!parsed.success) return validationFailed(parsed.error);
+    const { sport, type } = parsed.data;
+    return HttpResponse.json(
+      fixture.medals
+        .filter((medal) => sport === undefined || medal.sport === sport)
+        .filter((medal) => type === undefined || medal.type === type),
     );
   }),
 ];

@@ -1,4 +1,9 @@
-import type { SportEventResponse } from '@joj/shared';
+import type {
+  Continent,
+  MedalResponse,
+  NationStandingResponse,
+  SportEventResponse,
+} from '@joj/shared';
 
 /**
  * Les données de la fausse API, en mémoire. Les handlers les lisent et les modifient comme la
@@ -75,8 +80,90 @@ export const judoFinal: SportEventResponse = {
   ranking: [],
 };
 
-const initial = (): { sportEvents: SportEventResponse[] } => ({
+/** Le classement est déjà calculé : c'est l'API qui en porte les règles, testées de son côté. */
+const nationStandings: NationStandingResponse[] = [
+  standing(1, 'cn', 'Chine', 'asie', [4, 0, 0]),
+  standing(2, 'ke', 'Kenya', 'afrique', [3, 2, 0]),
+  standing(3, 'sn', 'Sénégal', 'afrique', [3, 1, 2]),
+  standing(4, 'ma', 'Maroc', 'afrique', [3, 1, 1]),
+  standing(5, 'br', 'Brésil', 'ameriques', [1, 0, 0]),
+  standing(6, 'tv', 'Tuvalu', 'oceanie', [0, 0, 0]),
+];
+
+function standing(
+  rank: number,
+  nationCode: string,
+  nationName: string,
+  continent: Continent,
+  [gold, silver, bronze]: [number, number, number],
+): NationStandingResponse {
+  return {
+    rank,
+    nationCode,
+    nationName,
+    continent,
+    gold,
+    silver,
+    bronze,
+    total: gold + silver + bronze,
+  };
+}
+
+const SPRINT_EVENT_ID = '0199f5c2-0000-7000-8000-000000000011';
+const HANDBALL_EVENT_ID = '0199f5c2-0000-7000-8000-000000000012';
+
+/** Triées comme l'API : par sport, puis par heure d'épreuve, puis par rang. */
+const medals: MedalResponse[] = [
+  {
+    id: '0199f5c2-0000-7000-8000-000000000021',
+    type: 'gold',
+    sport: 'athletisme',
+    eventId: SPRINT_EVENT_ID,
+    eventName: '100 m hommes',
+    competitor: 'Gift Bright',
+    nationCode: 'ke',
+    nationName: 'Kenya',
+  },
+  {
+    id: '0199f5c2-0000-7000-8000-000000000022',
+    type: 'silver',
+    sport: 'athletisme',
+    eventId: SPRINT_EVENT_ID,
+    eventName: '100 m hommes',
+    competitor: 'Hangyu Zhang',
+    nationCode: 'cn',
+    nationName: 'Chine',
+  },
+  {
+    id: '0199f5c2-0000-7000-8000-000000000023',
+    type: 'bronze',
+    sport: 'athletisme',
+    eventId: SPRINT_EVENT_ID,
+    eventName: '100 m hommes',
+    competitor: 'Szymon Dolega',
+    nationCode: 'pl',
+    nationName: 'Pologne',
+  },
+  {
+    id: '0199f5c2-0000-7000-8000-000000000024',
+    type: 'gold',
+    sport: 'beach-handball',
+    eventId: HANDBALL_EVENT_ID,
+    eventName: 'Femmes, finale',
+    competitor: 'Équipe du Brésil',
+    nationCode: 'br',
+    nationName: 'Brésil',
+  },
+];
+
+const initial = (): {
+  sportEvents: SportEventResponse[];
+  nationStandings: NationStandingResponse[];
+  medals: MedalResponse[];
+} => ({
   sportEvents: [{ ...futsalSemiFinal }, { ...longJump }, { ...sprintFinal }, { ...judoFinal }],
+  nationStandings: nationStandings.map((line) => ({ ...line })),
+  medals: medals.map((medal) => ({ ...medal })),
 });
 
 export const fixture = initial();
