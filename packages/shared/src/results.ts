@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-/** Liste fermée des 25 sports des Jeux ; les libellés français sont côté front. */
+/** Liste fermée des 25 sports des Jeux. */
 export const SPORT_SLUGS = [
   'athletisme',
   'aviron-de-mer',
@@ -31,6 +31,35 @@ export const SPORT_SLUGS = [
 
 export const sportSlugSchema = z.enum(SPORT_SLUGS);
 export type SportSlug = z.infer<typeof sportSlugSchema>;
+
+/** Le nom français de chaque sport, partagé car l'API cherche aussi les sports par leur nom. */
+export const SPORT_LABELS: Record<SportSlug, string> = {
+  athletisme: 'Athlétisme',
+  'aviron-de-mer': 'Aviron de mer',
+  badminton: 'Badminton',
+  baseball5: 'Baseball5',
+  'basketball-3x3': 'Basketball 3x3',
+  'beach-handball': 'Beach handball',
+  'beach-volley': 'Beach-volley',
+  boxe: 'Boxe',
+  breaking: 'Breaking',
+  'cyclisme-sur-route': 'Cyclisme sur route',
+  escrime: 'Escrime',
+  futsal: 'Futsal',
+  'gymnastique-artistique': 'Gymnastique artistique',
+  judo: 'Judo',
+  'lutte-de-plage': 'Lutte de plage',
+  natation: 'Natation',
+  'rugby-a-7': 'Rugby à 7',
+  skateboard: 'Skateboard',
+  'sports-equestres': 'Sports équestres',
+  taekwondo: 'Taekwondo',
+  'tennis-de-table': 'Tennis de table',
+  'tir-a-l-arc': "Tir à l'arc",
+  triathlon: 'Triathlon',
+  voile: 'Voile',
+  'wushu-taolu': 'Wushu taolu',
+};
 
 export const SPORT_EVENT_STATUSES = ['scheduled', 'in-progress', 'finished'] as const;
 export const sportEventStatusSchema = z.enum(SPORT_EVENT_STATUSES);

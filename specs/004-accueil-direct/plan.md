@@ -93,7 +93,7 @@ Chaque scénario de la spec est prouvé par au moins un test, au niveau le plus 
 
 Six tâches, dans l'ordre des couches. Chaque tâche nomme le test à écrire d'abord et cite les scénarios qu'elle couvre ; elle tient dans un commit.
 
-- [ ] T01 [004-AS4] Écrire d'abord `search/domain/search-hit.spec.ts` (« 004-AS4: … »), puis `packages/shared/src/search.ts`, le déplacement de `SPORT_LABELS` et `findSearchHits`
+- [x] T01 [004-AS4] Écrire d'abord `search/domain/search-hit.spec.ts` (« 004-AS4: … »), puis `packages/shared/src/search.ts`, le déplacement de `SPORT_LABELS` et `findSearchHits`
 - [ ] T02 [004-AS3, AS4, AS6] Écrire d'abord les tests dans `results/application/results.application.spec.ts` et `search/application/search.application.spec.ts` (« 004-AS3: … », « 004-AS4: … », « 004-AS6: … »), puis les ports, les repositories en mémoire, `ListLatestResults`, `ListLiveEvents` et `SearchSite`
 - [ ] T03 [004-AS3, AS4, AS6] Écrire d'abord les tests dans `results/infra/drizzle-sport-event.repository.int.spec.ts` et `search/infra/drizzle-search.repository.int.spec.ts` (« 004-AS3: … », « 004-AS4: … », « 004-AS6: … »), puis les méthodes Drizzle et `DrizzleSearchRepository`
 - [ ] T04 [004-AS3, AS4, AS6] Écrire d'abord les tests dans `apps/api/test/results.e2e.spec.ts` et `apps/api/test/search.e2e.spec.ts` (« 004-AS3: … », « 004-AS4: … », « 004-AS6: … »), puis les routes, le module `search` et son ajout à `app.module.ts`
