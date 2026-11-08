@@ -7,7 +7,7 @@ const MENU_LINK_ACTIVE = 'bg-primary text-primary-foreground';
 function SiteHeader() {
   return (
     <header className="bg-card">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-2 md:px-6">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-2 md:px-6">
         <Link to="/" className="flex items-center gap-3">
           <img src="/ayo.png" alt="" className="h-16 w-auto" />
           <span className="flex flex-col leading-none font-extrabold text-foreground">
@@ -15,12 +15,19 @@ function SiteHeader() {
             <span className="mt-1 text-xs font-semibold tracking-wide">Youth Olympic Games</span>
           </span>
         </Link>
-        <nav aria-label="Menu principal" className="flex items-center gap-1">
+        <nav aria-label="Menu principal" className="flex flex-wrap items-center gap-1">
           <Link to="/resultats" className={MENU_LINK} activeProps={{ className: MENU_LINK_ACTIVE }}>
             Résultats
           </Link>
           <Link to="/medailles" className={MENU_LINK} activeProps={{ className: MENU_LINK_ACTIVE }}>
             Médailles
+          </Link>
+          <Link
+            to="/calendrier"
+            className={MENU_LINK}
+            activeProps={{ className: MENU_LINK_ACTIVE }}
+          >
+            Calendrier
           </Link>
         </nav>
       </div>

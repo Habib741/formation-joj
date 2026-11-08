@@ -1,4 +1,4 @@
-import { GAMES_FIRST_DAY, GAMES_LAST_DAY, type SportSlug } from '@joj/shared';
+import { GAMES_FIRST_DAY, GAMES_LAST_DAY } from '@joj/shared';
 import { Link } from '@tanstack/react-router';
 import { cn } from '@/lib/utils';
 
@@ -20,20 +20,23 @@ function gamesDays(): string[] {
 }
 
 interface DaySelectorProps {
+  to: '/resultats' | '/calendrier';
   selectedDay: string;
-  sport: SportSlug | undefined;
 }
 
-/** Les jours des Jeux en pastilles, comme le bloc « Derniers résultats » de la maquette. */
-export function DaySelector({ selectedDay, sport }: DaySelectorProps) {
+/**
+ * Les jours des Jeux en pastilles, comme le bloc « Derniers résultats » de la maquette.
+ * Changer de jour conserve les autres filtres de l'adresse.
+ */
+export function DaySelector({ to, selectedDay }: DaySelectorProps) {
   return (
     <nav aria-label="Jours des Jeux" className="-mx-1 overflow-x-auto px-1 py-1">
       <ul className="flex w-max gap-2">
         {gamesDays().map((day) => (
           <li key={day}>
             <Link
-              to="/resultats"
-              search={{ date: day, sport }}
+              from={to}
+              search={(previous) => ({ ...previous, date: day })}
               aria-current={day === selectedDay ? 'date' : undefined}
               className={cn(
                 'block rounded-full px-4 py-1.5 text-sm font-medium whitespace-nowrap transition-colors',

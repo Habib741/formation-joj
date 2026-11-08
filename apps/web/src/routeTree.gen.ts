@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CalendrierRouteImport } from './routes/calendrier'
 import { Route as MedaillesRouteImport } from './routes/medailles'
 import { Route as ResultatsRouteImport } from './routes/resultats'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendrierRoute = CalendrierRouteImport.update({
+  id: '/calendrier',
+  path: '/calendrier',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MedaillesRoute = MedaillesRouteImport.update({
@@ -31,30 +37,34 @@ const ResultatsRoute = ResultatsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/calendrier': typeof CalendrierRoute
   '/medailles': typeof MedaillesRoute
   '/resultats': typeof ResultatsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/calendrier': typeof CalendrierRoute
   '/medailles': typeof MedaillesRoute
   '/resultats': typeof ResultatsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/calendrier': typeof CalendrierRoute
   '/medailles': typeof MedaillesRoute
   '/resultats': typeof ResultatsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/medailles' | '/resultats'
+  fullPaths: '/' | '/calendrier' | '/medailles' | '/resultats'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/medailles' | '/resultats'
-  id: '__root__' | '/' | '/medailles' | '/resultats'
+  to: '/' | '/calendrier' | '/medailles' | '/resultats'
+  id: '__root__' | '/' | '/calendrier' | '/medailles' | '/resultats'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CalendrierRoute: typeof CalendrierRoute
   MedaillesRoute: typeof MedaillesRoute
   ResultatsRoute: typeof ResultatsRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendrier': {
+      id: '/calendrier'
+      path: '/calendrier'
+      fullPath: '/calendrier'
+      preLoaderRoute: typeof CalendrierRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/medailles': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CalendrierRoute: CalendrierRoute,
   MedaillesRoute: MedaillesRoute,
   ResultatsRoute: ResultatsRoute,
 }

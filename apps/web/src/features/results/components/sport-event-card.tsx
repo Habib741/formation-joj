@@ -1,14 +1,14 @@
 import 'flag-icons/css/flag-icons.min.css';
 import type { RankingEntryResponse, SportEventResponse, SportEventStatus } from '@joj/shared';
 import { useId } from 'react';
+import { formatEventTime } from '@/features/calendar/components/event-time';
 import { cn } from '@/lib/utils';
 import { MENTION_LABELS, STATUS_LABELS } from './result-labels';
 
-const DAKAR_TIME = new Intl.DateTimeFormat('fr-FR', {
-  hour: '2-digit',
-  minute: '2-digit',
-  timeZone: 'Africa/Dakar',
-});
+interface SportEventCardProps {
+  event: SportEventResponse;
+  timeZone: string;
+}
 
 const STATUS_STYLES: Record<SportEventStatus, string> = {
   scheduled: 'bg-muted text-foreground',
@@ -22,7 +22,7 @@ const MEDAL_STYLES: Record<number, string> = {
   3: 'bg-medal-bronze',
 };
 
-export function SportEventCard({ event }: { event: SportEventResponse }) {
+export function SportEventCard({ event, timeZone }: SportEventCardProps) {
   const titleId = useId();
   return (
     <article
@@ -33,9 +33,7 @@ export function SportEventCard({ event }: { event: SportEventResponse }) {
         <h3 id={titleId} className="font-semibold">
           {event.name}
         </h3>
-        <p className="text-sm text-muted-foreground">
-          {DAKAR_TIME.format(new Date(event.startsAt)).replace(':', 'h')}
-        </p>
+        <p className="text-sm text-muted-foreground">{formatEventTime(event.startsAt, timeZone)}</p>
         <p
           className={cn(
             'rounded-full px-2.5 py-0.5 text-xs font-medium',

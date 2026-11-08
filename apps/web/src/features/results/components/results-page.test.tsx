@@ -113,4 +113,62 @@ describe('ResultsPage', () => {
 
     expect(await screen.findByText('Données de démonstration')).toBeInTheDocument();
   });
+
+  it('003-AS5: choosing a nation keeps its events, with their complete ranking', async () => {
+    const user = await open('date=2026-11-10');
+    await eventCard('Course en ligne femmes');
+    await screen.findByRole('option', { name: 'Sénégal' });
+
+    await user.selectOptions(screen.getByLabelText('Nation'), 'Sénégal');
+
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('article', { name: 'Course en ligne femmes' }),
+      ).not.toBeInTheDocument(),
+    );
+    const rows = await rankingRows('100 m hommes, finale');
+    expect(rows.map((row) => row[1])).toEqual(['Kenya', 'Sénégal']);
+  });
+
+  it('003-AS5: keeps the chosen nation when the day changes', async () => {
+    const user = await open('date=2026-11-10&nation=sn');
+    await screen.findByRole('option', { name: 'Sénégal' });
+    expect(screen.getByLabelText('Nation')).toHaveValue('sn');
+
+    await user.click(screen.getByRole('link', { name: '8 nov.' }));
+
+    await screen.findByRole('heading', { level: 1, name: /8 novembre/ });
+    expect(screen.getByLabelText('Nation')).toHaveValue('sn');
+  });
+
+  it('003-AS6: shows the athletes of the nation with their event, time and status', async () => {
+    await open('date=2026-11-10&nation=sn');
+
+    const athletes = await screen.findByRole('region', { name: 'Athlètes du jour' });
+    const items = await within(athletes).findAllByRole('listitem');
+
+    expect(items).toHaveLength(2);
+    expect(items[0]).toHaveTextContent('Awa Diop');
+    expect(items[0]).toHaveTextContent('100 m hommes, finale');
+    expect(items[0]).toHaveTextContent('09h00');
+    expect(items[0]).toHaveTextContent('Terminé');
+    expect(items[1]).toHaveTextContent('Équipe du Sénégal');
+    expect(items[1]).toHaveTextContent('Hommes, finale');
+    expect(items[1]).toHaveTextContent('20h30');
+    expect(items[1]).toHaveTextContent('Programmé');
+    expect(within(athletes).queryByText('Gift Bright')).not.toBeInTheDocument();
+  });
+
+  it('003-AS6: shows no athletes before a nation is chosen', async () => {
+    await open('date=2026-11-10');
+    await eventCard('Course en ligne femmes');
+
+    expect(screen.queryByRole('region', { name: 'Athlètes du jour' })).not.toBeInTheDocument();
+  });
+
+  it('003-AS7: shows a message when the nation has no athlete that day', async () => {
+    await open('date=2026-11-10&nation=tv');
+
+    expect(await screen.findByText('Aucun athlète de cette nation ce jour')).toBeInTheDocument();
+  });
 });

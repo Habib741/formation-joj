@@ -1,43 +1,57 @@
-import { SPORT_SLUGS, type SportEventResponse, type SportSlug, sportSlugSchema } from '@joj/shared';
+import {
+  DAKAR_TIME_ZONE,
+  nationCodeSchema,
+  SPORT_SLUGS,
+  type SportSlug,
+  sportSlugSchema,
+} from '@joj/shared';
 import { getRouteApi, useNavigate } from '@tanstack/react-router';
 import { useId, useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { NativeSelect } from '@/components/ui/native-select';
-import { cn } from '@/lib/utils';
+import { useNationStandings } from '@/features/medals/api/medals.queries';
 import { useDayResults } from '../api/results.queries';
 import { DaySelector } from './day-selector';
 import { defaultDay } from './default-day';
+import { NationAthletes } from './nation-athletes';
 import { SPORT_LABELS } from './result-labels';
-import { SportEventCard } from './sport-event-card';
+import { SportGroups } from './sport-groups';
 
 const routeApi = getRouteApi('/resultats');
 
 const LONG_DAY = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long', timeZone: 'UTC' });
-
-/** Les couleurs des pastilles de sport, reprises des pictogrammes de la maquette. */
-const BADGE_STYLES = ['bg-joj-pale-red', 'bg-accent', 'bg-joj-pale-yellow'];
 
 export function ResultsPage() {
   const search = routeApi.useSearch();
   // Le jour par défaut est fixé à l'ouverture de la page, pas à chaque rendu.
   const [openingDay] = useState(() => defaultDay(new Date()));
   const day = search.date ?? openingDay;
-  const results = useDayResults({ date: day, sport: search.sport });
+  const results = useDayResults({ date: day, sport: search.sport, nation: search.nation });
 
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-bold">Résultats du {LONG_DAY.format(new Date(day))}</h1>
       <div className="flex flex-col gap-4 rounded-2xl border bg-card p-4 shadow-sm md:p-6">
-        <DaySelector selectedDay={day} sport={search.sport} />
-        <SportFilter day={day} sport={search.sport} />
+        <DaySelector to="/resultats" selectedDay={day} />
+        <div className="flex flex-col gap-4 sm:flex-row">
+          <SportFilter day={day} sport={search.sport} />
+          <NationFilter day={day} nation={search.nation} />
+        </div>
       </div>
+      {search.nation !== undefined && <NationAthletes day={day} nation={search.nation} />}
       {results.isPending && <p className="text-muted-foreground">Chargement…</p>}
       {results.isError && (
         <p role="alert" className="text-destructive">
           Impossible de charger les résultats.
         </p>
       )}
-      {results.isSuccess && <SportGroups events={results.data} />}
+      {results.isSuccess && (
+        <SportGroups
+          events={results.data}
+          emptyMessage="Aucune épreuve pour ce jour et ce sport"
+          timeZone={DAKAR_TIME_ZONE}
+        />
+      )}
     </div>
   );
 }
@@ -46,7 +60,7 @@ function SportFilter({ day, sport }: { day: string; sport: SportSlug | undefined
   const navigate = useNavigate({ from: '/resultats' });
   const selectId = useId();
   return (
-    <div className="flex flex-col gap-1.5 sm:max-w-xs">
+    <div className="flex flex-1 flex-col gap-1.5 sm:max-w-xs">
       <Label htmlFor={selectId}>Sport</Label>
       <NativeSelect
         id={selectId}
@@ -54,7 +68,11 @@ function SportFilter({ day, sport }: { day: string; sport: SportSlug | undefined
         onChange={(event) => {
           const parsed = sportSlugSchema.safeParse(event.target.value);
           void navigate({
-            search: { date: day, sport: parsed.success ? parsed.data : undefined },
+            search: (previous) => ({
+              ...previous,
+              date: day,
+              sport: parsed.success ? parsed.data : undefined,
+            }),
           });
         }}
       >
@@ -69,55 +87,37 @@ function SportFilter({ day, sport }: { day: string; sport: SportSlug | undefined
   );
 }
 
-function SportGroups({ events }: { events: SportEventResponse[] }) {
-  if (events.length === 0) {
-    return (
-      <p className="rounded-2xl border bg-card p-6 text-center text-muted-foreground">
-        Aucune épreuve pour ce jour et ce sport
-      </p>
-    );
-  }
+function NationFilter({ day, nation }: { day: string; nation: string | undefined }) {
+  const navigate = useNavigate({ from: '/resultats' });
+  const selectId = useId();
+  const standings = useNationStandings({});
+  const nations = (standings.data ?? []).toSorted((a, b) =>
+    a.nationName.localeCompare(b.nationName, 'fr'),
+  );
   return (
-    <div className="flex flex-col gap-6">
-      {SPORT_SLUGS.filter((slug) => events.some((event) => event.sport === slug)).map((slug) => (
-        <SportGroup
-          key={slug}
-          sport={slug}
-          events={events.filter((event) => event.sport === slug)}
-        />
-      ))}
+    <div className="flex flex-1 flex-col gap-1.5 sm:max-w-xs">
+      <Label htmlFor={selectId}>Nation</Label>
+      <NativeSelect
+        id={selectId}
+        value={nation ?? ''}
+        onChange={(event) => {
+          const parsed = nationCodeSchema.safeParse(event.target.value);
+          void navigate({
+            search: (previous) => ({
+              ...previous,
+              date: day,
+              nation: parsed.success ? parsed.data : undefined,
+            }),
+          });
+        }}
+      >
+        <option value="">Toutes les nations</option>
+        {nations.map(({ nationCode, nationName }) => (
+          <option key={nationCode} value={nationCode}>
+            {nationName}
+          </option>
+        ))}
+      </NativeSelect>
     </div>
-  );
-}
-
-function SportGroup({ sport, events }: { sport: SportSlug; events: SportEventResponse[] }) {
-  const titleId = useId();
-  return (
-    <section aria-labelledby={titleId} className="rounded-2xl border bg-card p-4 shadow-sm md:p-6">
-      <div className="mb-2 flex items-center gap-3">
-        <SportBadge sport={sport} />
-        <h2 id={titleId} className="text-lg font-bold">
-          {SPORT_LABELS[sport]}
-        </h2>
-      </div>
-      {events.map((event) => (
-        <SportEventCard key={event.id} event={event} />
-      ))}
-    </section>
-  );
-}
-
-function SportBadge({ sport }: { sport: SportSlug }) {
-  const color = BADGE_STYLES[SPORT_SLUGS.indexOf(sport) % BADGE_STYLES.length];
-  return (
-    <span
-      aria-hidden="true"
-      className={cn(
-        'flex size-11 shrink-0 items-center justify-center rounded-full text-sm font-bold',
-        color,
-      )}
-    >
-      {SPORT_LABELS[sport].slice(0, 2).toUpperCase()}
-    </span>
   );
 }
