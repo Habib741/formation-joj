@@ -14,7 +14,7 @@ Aux JOJ Dakar 2026, 25 sports se déroulent en parallèle pendant deux semaines.
 
 ## Proposition
 
-JojPulse est une plateforme web, consultable sur téléphone comme sur ordinateur, qui réunit au même endroit les résultats, le calendrier, les médailles et le classement des nations, avec le même traitement pour tous les pays. Son identité visuelle suit la maquette `apps/web/public/design.png` (vert, jaune, rouge et bleu nuit, avec Ayo, la mascotte des Jeux). Toutes les nations y figurent, et le Sénégal, pays hôte, est mis en évidence. Un site web évite toute installation, depuis les gradins comme depuis une salle de presse.
+JojPulse est une plateforme web, consultable sur téléphone comme sur ordinateur, qui réunit au même endroit les résultats, le calendrier, les médailles et le classement des nations, avec le même traitement pour tous les pays. Son identité visuelle suit la maquette `specs/assets/design.png` (vert, jaune, rouge et bleu nuit, avec Ayo, la mascotte des Jeux). Toutes les nations y figurent, et le Sénégal, pays hôte, est mis en évidence. Un site web évite toute installation, depuis les gradins comme depuis une salle de presse.
 
 ## Mesure du succès
 

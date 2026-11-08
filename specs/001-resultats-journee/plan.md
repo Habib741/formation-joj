@@ -110,4 +110,4 @@ Six tâches, dans l'ordre des couches. Chaque tâche nomme le test à écrire d'
 
 ### Passage 1
 
-- [ ] T07 [001-AS1] Écrire d'abord `apps/web/src/routes/resultats.assets.test.ts` (« 001-AS1: the design mock-up is not served with the site »), puis déplacer `apps/web/public/design.png` vers `specs/assets/design.png`, le commiter et mettre à jour `apps/web/src/styles.css:6` et `specs/prd-jojpulse.md:17`. Preuve : relecteur, `apps/web/public/design.png` non suivi et absent du plan, alors que le PRD et `styles.css` le citent.
+- [x] T07 [001-AS1] Écrire d'abord `apps/web/src/routes/resultats.assets.test.ts` (« 001-AS1: the design mock-up is not served with the site »), puis déplacer `apps/web/public/design.png` vers `specs/assets/design.png`, le commiter et mettre à jour `apps/web/src/styles.css:6` et `specs/prd-jojpulse.md:17`. Preuve : relecteur, `apps/web/public/design.png` non suivi et absent du plan, alors que le PRD et `styles.css` le citent.

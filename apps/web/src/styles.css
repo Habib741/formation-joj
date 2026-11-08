@@ -3,7 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Couleurs relevées sur la maquette apps/web/public/design.png. */
+/* Couleurs relevées sur la maquette specs/assets/design.png. */
 :root {
   --background: #fcfcfe;
   --foreground: #11243f;
