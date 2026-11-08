@@ -1,5 +1,7 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
 import { buttonVariants } from '@/components/ui/button';
+import { SearchForm } from '@/features/search/components/search-form';
+import { ThemeSwitch } from '@/features/theme/components/theme-switch';
 
 const MENU_LINK = 'rounded-full px-4 py-2 text-sm font-semibold';
 const MENU_LINK_ACTIVE = 'bg-primary text-primary-foreground';
@@ -16,6 +18,14 @@ function SiteHeader() {
           </span>
         </Link>
         <nav aria-label="Menu principal" className="flex flex-wrap items-center gap-1">
+          <Link
+            to="/"
+            activeOptions={{ exact: true }}
+            className={MENU_LINK}
+            activeProps={{ className: MENU_LINK_ACTIVE }}
+          >
+            Accueil
+          </Link>
           <Link to="/resultats" className={MENU_LINK} activeProps={{ className: MENU_LINK_ACTIVE }}>
             Résultats
           </Link>
@@ -29,7 +39,14 @@ function SiteHeader() {
           >
             Calendrier
           </Link>
+          <Link to="/direct" className={MENU_LINK} activeProps={{ className: MENU_LINK_ACTIVE }}>
+            Direct
+          </Link>
         </nav>
+        <div className="flex flex-wrap items-center gap-2">
+          <SearchForm />
+          <ThemeSwitch />
+        </div>
       </div>
       <div aria-hidden="true" className="flex h-1.5">
         <span className="flex-1 bg-joj-green" />

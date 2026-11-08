@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CalendrierRouteImport } from './routes/calendrier'
+import { Route as DirectRouteImport } from './routes/direct'
 import { Route as MedaillesRouteImport } from './routes/medailles'
+import { Route as RechercheRouteImport } from './routes/recherche'
 import { Route as ResultatsRouteImport } from './routes/resultats'
 
 const IndexRoute = IndexRouteImport.update({
@@ -24,9 +26,19 @@ const CalendrierRoute = CalendrierRouteImport.update({
   path: '/calendrier',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DirectRoute = DirectRouteImport.update({
+  id: '/direct',
+  path: '/direct',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MedaillesRoute = MedaillesRouteImport.update({
   id: '/medailles',
   path: '/medailles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RechercheRoute = RechercheRouteImport.update({
+  id: '/recherche',
+  path: '/recherche',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResultatsRoute = ResultatsRouteImport.update({
@@ -38,34 +50,51 @@ const ResultatsRoute = ResultatsRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/calendrier': typeof CalendrierRoute
+  '/direct': typeof DirectRoute
   '/medailles': typeof MedaillesRoute
+  '/recherche': typeof RechercheRoute
   '/resultats': typeof ResultatsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/calendrier': typeof CalendrierRoute
+  '/direct': typeof DirectRoute
   '/medailles': typeof MedaillesRoute
+  '/recherche': typeof RechercheRoute
   '/resultats': typeof ResultatsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/calendrier': typeof CalendrierRoute
+  '/direct': typeof DirectRoute
   '/medailles': typeof MedaillesRoute
+  '/recherche': typeof RechercheRoute
   '/resultats': typeof ResultatsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/calendrier' | '/medailles' | '/resultats'
+  fullPaths:
+    '/' | '/calendrier' | '/direct' | '/medailles' | '/recherche' | '/resultats'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/calendrier' | '/medailles' | '/resultats'
-  id: '__root__' | '/' | '/calendrier' | '/medailles' | '/resultats'
+  to:
+    '/' | '/calendrier' | '/direct' | '/medailles' | '/recherche' | '/resultats'
+  id:
+    | '__root__'
+    | '/'
+    | '/calendrier'
+    | '/direct'
+    | '/medailles'
+    | '/recherche'
+    | '/resultats'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CalendrierRoute: typeof CalendrierRoute
+  DirectRoute: typeof DirectRoute
   MedaillesRoute: typeof MedaillesRoute
+  RechercheRoute: typeof RechercheRoute
   ResultatsRoute: typeof ResultatsRoute
 }
 
@@ -85,11 +114,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CalendrierRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/direct': {
+      id: '/direct'
+      path: '/direct'
+      fullPath: '/direct'
+      preLoaderRoute: typeof DirectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/medailles': {
       id: '/medailles'
       path: '/medailles'
       fullPath: '/medailles'
       preLoaderRoute: typeof MedaillesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recherche': {
+      id: '/recherche'
+      path: '/recherche'
+      fullPath: '/recherche'
+      preLoaderRoute: typeof RechercheRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/resultats': {
@@ -105,7 +148,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CalendrierRoute: CalendrierRoute,
+  DirectRoute: DirectRoute,
   MedaillesRoute: MedaillesRoute,
+  RechercheRoute: RechercheRoute,
   ResultatsRoute: ResultatsRoute,
 }
 export const routeTree = rootRouteImport

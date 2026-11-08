@@ -3,9 +3,12 @@
  * choix sans médaille. Un état qui n'est jamais audité peut régresser sans bruit.
  */
 import { screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { axeFindings, runAxe } from '@/test/axe';
 import { renderRoute } from '@/test/utils';
+
+// Un audit axe-core d'une grande page prend plusieurs secondes quand les tests tournent en parallèle.
+vi.setConfig({ testTimeout: 15_000 });
 
 describe('medals accessibility', () => {
   it('002-AS5: the standings and the medals are clean', async () => {

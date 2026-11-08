@@ -72,7 +72,7 @@ function MedalRow({ medal }: { medal: MedalResponse }) {
     <li className="flex flex-wrap items-center gap-x-3 gap-y-1">
       <span
         className={cn(
-          'w-16 rounded-full px-2 py-0.5 text-center text-xs font-bold',
+          'w-16 rounded-full px-2 py-0.5 text-center text-xs font-bold text-joj-night',
           MEDAL_STYLES[medal.type],
         )}
       >

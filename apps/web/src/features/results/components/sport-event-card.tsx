@@ -91,7 +91,7 @@ function RankBadge({ rank }: { rank: number }) {
   return (
     <span
       className={cn(
-        'inline-flex size-6 items-center justify-center rounded-full text-xs font-bold',
+        'inline-flex size-6 items-center justify-center rounded-full text-xs font-bold text-joj-night',
         MEDAL_STYLES[rank],
       )}
     >
