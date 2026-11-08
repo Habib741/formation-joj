@@ -4,46 +4,45 @@
 
 ## Problème
 
-Aux JOJ Dakar 2026, les épreuves s'enchaînent sur plusieurs sites. Le public ne sait pas vite qui a gagné, les journalistes recoupent les résultats à la main, et quand un podium publié est faux, la correction se diffuse mal : les deux versions circulent et personne ne sait laquelle est officielle.
+Aux JOJ Dakar 2026, 25 sports se déroulent en parallèle pendant deux semaines. Le public veut savoir vite qui a gagné, quand concourent les athlètes et où en sont les nations, mais doit passer d'une source à l'autre, souvent pensée pour une seule délégation.
 
 ## Utilisateurs
 
-- **Officiel des résultats d'un site** : publier le podium d'une épreuve terminée et, au besoin, le corriger. Parcours : il choisit l'épreuve qui vient de se terminer, saisit l'or, l'argent et le bronze, puis publie. Si le jury revient sur sa décision, il corrige le podium en donnant un motif.
-- **Spectateur** (sur place ou à distance) : savoir qui a gagné. Parcours : il ouvre la plateforme sur son téléphone, cherche une discipline (« lutte ») ou filtre par site et par jour, ouvre l'épreuve et voit le podium. Un podium corrigé porte la mention « corrigé ».
-- **Journaliste accrédité** : vérifier un résultat sans recouper à la main. Parcours : il retrouve l'épreuve par la recherche, vérifie que le résultat est officiel, quand et par quel site il a été publié, et lit l'historique s'il a été corrigé, avant de citer le podium.
+- **Spectateur** (sur place ou à distance) : savoir ce qui s'est passé aujourd'hui. Parcours : il ouvre la plateforme sur son téléphone, choisit un jour et un sport, puis lit le classement d'une épreuve.
+- **Supporter d'une délégation** : suivre son pays. Parcours : il choisit sa nation, voit ses athlètes du jour et ses résultats, puis sa place au classement des nations.
+- **Journaliste accrédité** : retrouver vite un résultat et un total de médailles. Parcours : il filtre par sport ou par type de médaille, puis relève l'épreuve, les médaillés et le classement.
 
 ## Proposition
 
-JojPulse est une plateforme web, consultable sur téléphone comme sur ordinateur, qui est la source unique des résultats officiels : chaque officiel y publie le podium de son site, et le public comme les journalistes y lisent le même résultat. On y cherche une épreuve par discipline et on filtre par site ou par jour. Une correction ne remplace pas un podium en silence : elle garde l'ancienne version et son motif. La source unique s'attaque au vrai problème, plusieurs versions qui circulent, mieux qu'un canal de diffusion de plus ; le web se consulte sans installation, depuis les gradins comme depuis une salle de presse.
+JojPulse est une plateforme web, consultable sur téléphone comme sur ordinateur, qui réunit au même endroit les résultats, le calendrier, les médailles et le classement des nations, avec le même traitement pour tous les pays. Son identité visuelle suit la maquette `apps/web/public/design.png` (vert, jaune, rouge et bleu nuit, avec Ayo, la mascotte des Jeux). Toutes les nations y figurent, et le Sénégal, pays hôte, est mis en évidence. Un site web évite toute installation, depuis les gradins comme depuis une salle de presse.
 
 ## Mesure du succès
 
-Pendant la démo : un officiel publie le podium d'une épreuve, et un spectateur le voit tout de suite. Un podium où le même athlète figure deux fois est refusé. Un podium corrigé apparaît comme « corrigé », avec son motif et l'ancienne version. Une recherche « lutte » ne montre que les épreuves de lutte.
+Pendant la démo : un spectateur choisit un jour et un sport et lit le classement d'une épreuve terminée. Une épreuve à venir s'affiche « Programmé », sans classement. Le classement des nations place devant, à nombre d'or égal, la nation qui a le plus d'argent. Le filtre « médailles d'or » ne montre que des médailles d'or.
 
 ## Tranches
 
-### TR1 — Publier et consulter un podium
+### TR1 — Consulter les résultats d'une journée
 
-L'officiel publie l'or, l'argent et le bronze d'une épreuve, et le spectateur consulte le podium de cette épreuve. Règles : trois athlètes différents ; une épreuve n'a qu'un podium publié.
+Le spectateur choisit un jour et un sport, et voit les épreuves regroupées par sport, avec leur statut, et le classement des épreuves terminées (rang, nation, athlète ou équipe, performance). Règles : une épreuve non terminée n'affiche pas de classement ; les mentions « disqualifié » ou « n'a pas terminé » remplacent la performance.
 
-### TR2 — Corriger un podium, avec sa trace
+### TR2 — Classement des nations et médailles
 
-L'officiel corrige un podium publié en donnant un motif obligatoire. Le spectateur et le journaliste voient que le résultat a été corrigé, avec l'historique des versions.
+Le visiteur voit les nations classées par or, puis argent, puis bronze, et les filtre par continent ; des nations à égalité parfaite partagent le même rang. Il voit aussi les médailles par sport et par épreuve, filtrées par sport ou par type. Une équipe médaillée compte pour une seule médaille.
 
-### TR3 — Rechercher et filtrer les résultats de tous les sites
+### TR3 — Calendrier et suivi d'une délégation
 
-Le spectateur voit les épreuves terminées de tous les sites, la plus récente d'abord. Il cherche une discipline par son nom et filtre par site, par discipline ou par jour.
+Le visiteur parcourt les épreuves à venir par jour et par sport, à l'heure de Dakar ou à son heure locale. Le supporter choisit une nation : il filtre les résultats sur elle et voit ses athlètes du jour.
 
-### TR4 — Vérification par les journalistes
+### TR4 — Accueil et direct
 
-Le journaliste voit, pour chaque résultat, s'il est officiel, quand il a été publié ou corrigé pour la dernière fois, et par quel site.
+L'accueil suit la maquette : les chiffres clés des Jeux, le début du classement, les derniers résultats et toutes les disciplines. Le visiteur peut chercher sur tout le site et choisir un thème clair ou sombre. Une page de direct montre les épreuves en cours et se met à jour sans action du visiteur.
 
 ## Hors périmètre
 
-- Le chronométrage et le calcul des classements (le jury décide du podium), le tableau des médailles par pays, les records, les notifications poussées et les réseaux sociaux.
+- Le chronométrage et le calcul des classements d'épreuve, les fiches d'athlètes, les notifications poussées, les réseaux sociaux, la boutique, les contenus éditoriaux et la publication ou correction de podiums (ancienne vision).
 
 ## Hypothèses et risques
 
-- Supposé : un officiel par site, déjà reconnu par la plateforme, publie après la décision du jury. Si une réclamation est en cours, il faudra un état « provisoire ».
-- Supposé : pas d'ex æquo. Deux médailles de bronze, par exemple, casseraient la règle des trois athlètes différents.
-- Supposé : les épreuves, les disciplines, les sites et les athlètes sont déjà connus. Leur saisie n'est pas couverte.
+- Supposé : les données sont un jeu de démonstration préparé, signalé comme tel. Une source réelle exigerait un droit de réutilisation, à vérifier. Risque : sans publication par des officiels, JojPulse n'est plus une source officielle et ne règle plus les versions contradictoires d'un résultat.
+- Supposé : le droit d'utiliser les visuels de la maquette (lion, emblème, anneaux olympiques) est acquis pour l'atelier. Risque : ces marques sont protégées ; toute diffusion publique demande une autorisation ou leur retrait.
