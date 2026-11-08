@@ -22,6 +22,11 @@ export const resultsApi = {
       signal,
     });
   },
+  listLatest: (signal?: AbortSignal) =>
+    api.request<SportEventResponse[]>('/results/latest', {
+      schema: sportEventListSchema,
+      signal,
+    }),
   listAthletes: ({ date, nation }: NationAthletesQuery, signal?: AbortSignal) => {
     const params = new URLSearchParams({ date, nation });
     return api.request<NationAthleteResponse[]>(`/results/athletes?${params.toString()}`, {

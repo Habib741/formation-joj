@@ -2,6 +2,7 @@ import type {
   Continent,
   MedalResponse,
   NationStandingResponse,
+  SearchHitResponse,
   SportEventResponse,
 } from '@joj/shared';
 
@@ -170,6 +171,30 @@ const participants: FixtureParticipant[] = [
   { eventId: NATION_FUTSAL_ID, nationCode: 'sn', competitor: 'Équipe du Sénégal' },
 ];
 
+/** Une épreuve terminée plus ancienne, qui reste hors des trois derniers résultats. */
+const olderFinal: SportEventResponse = {
+  id: '0199f5c2-0000-7000-8000-000000000010',
+  sport: 'boxe',
+  name: 'Ancienne finale',
+  startsAt: '2026-11-06T10:00:00.000Z',
+  status: 'finished',
+  ranking: [],
+};
+
+/** Les éléments que la recherche sait trouver, déjà calculés comme le classement. */
+const searchHits: SearchHitResponse[] = [
+  { kind: 'nation', label: 'Sénégal', date: null, sport: null, nation: 'sn' },
+  { kind: 'sport', label: 'Natation', date: null, sport: 'natation', nation: null },
+  {
+    kind: 'event',
+    label: '100 m hommes, finale',
+    date: '2026-11-08',
+    sport: 'athletisme',
+    nation: null,
+  },
+  { kind: 'athlete', label: 'Gift Bright', date: '2026-11-08', sport: 'athletisme', nation: 'ke' },
+];
+
 /** Le classement est déjà calculé : c'est l'API qui en porte les règles, testées de son côté. */
 const nationStandings: NationStandingResponse[] = [
   standing(1, 'cn', 'Chine', 'asie', [4, 0, 0]),
@@ -251,6 +276,7 @@ const initial = (): {
   nationStandings: NationStandingResponse[];
   medals: MedalResponse[];
   participants: FixtureParticipant[];
+  searchHits: SearchHitResponse[];
 } => ({
   sportEvents: [
     { ...futsalSemiFinal },
@@ -258,7 +284,9 @@ const initial = (): {
     { ...sprintFinal },
     { ...judoFinal },
     ...followingDays.map((event) => ({ ...event })),
+    { ...olderFinal },
   ],
+  searchHits: searchHits.map((hit) => ({ ...hit })),
   participants: participants.map((participant) => ({ ...participant })),
   nationStandings: nationStandings.map((line) => ({ ...line })),
   medals: medals.map((medal) => ({ ...medal })),

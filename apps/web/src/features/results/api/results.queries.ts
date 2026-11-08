@@ -6,6 +6,7 @@ import { resultsApi } from './results.api';
 export const resultKeys = {
   all: ['results'] as const,
   day: (query: DayResultsQuery) => [...resultKeys.all, 'day', query] as const,
+  latest: () => [...resultKeys.all, 'latest'] as const,
   athletes: (query: NationAthletesQuery) => [...resultKeys.all, 'athletes', query] as const,
 };
 
@@ -20,6 +21,14 @@ export const nationAthletesQueryOptions = (query: NationAthletesQuery) =>
     queryKey: resultKeys.athletes(query),
     queryFn: ({ signal }) => resultsApi.listAthletes(query, signal),
   });
+
+export const latestResultsQueryOptions = () =>
+  queryOptions({
+    queryKey: resultKeys.latest(),
+    queryFn: ({ signal }) => resultsApi.listLatest(signal),
+  });
+
+export const useLatestResults = () => useQuery(latestResultsQueryOptions());
 
 export const useDayResults = (query: DayResultsQuery) => useQuery(dayResultsQueryOptions(query));
 

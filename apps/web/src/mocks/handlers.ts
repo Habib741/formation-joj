@@ -5,6 +5,7 @@ import {
   nationAthletesQuerySchema,
   nationStandingsQuerySchema,
   type ProblemDetails,
+  searchQuerySchema,
   type SportEventResponse,
   type SportSlug,
 } from '@joj/shared';
@@ -58,6 +59,13 @@ export function validationFailed(error: z.ZodError) {
   });
 }
 
+function withoutAccents(text: string): string {
+  return text
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase();
+}
+
 /** Les épreuves d'un jour, éventuellement d'un seul sport, triées par sport puis par heure. */
 function eventsOfDay(date: string, sport?: SportSlug): SportEventResponse[] {
   return fixture.sportEvents
@@ -82,6 +90,39 @@ export const handlers: RequestHandler[] = [
             (participant) => participant.eventId === event.id && participant.nationCode === nation,
           ),
       ),
+    );
+  }),
+
+  http.get('*/api/results/latest', async () => {
+    const failure = await gate('GET', '/api/results/latest');
+    if (failure) return failure;
+    return HttpResponse.json(
+      fixture.sportEvents
+        .filter((event) => event.status === 'finished')
+        .toSorted((a, b) => b.startsAt.localeCompare(a.startsAt))
+        .slice(0, 3),
+    );
+  }),
+
+  http.get('*/api/results/live', async () => {
+    const failure = await gate('GET', '/api/results/live');
+    if (failure) return failure;
+    return HttpResponse.json(
+      fixture.sportEvents
+        .filter((event) => event.status === 'in-progress')
+        .toSorted((a, b) => a.startsAt.localeCompare(b.startsAt)),
+    );
+  }),
+
+  http.get('*/api/search', async ({ request }) => {
+    const failure = await gate('GET', '/api/search');
+    if (failure) return failure;
+    const query = Object.fromEntries(new URL(request.url).searchParams);
+    const parsed = searchQuerySchema.safeParse(query);
+    if (!parsed.success) return validationFailed(parsed.error);
+    const wanted = withoutAccents(parsed.data.q);
+    return HttpResponse.json(
+      fixture.searchHits.filter((hit) => withoutAccents(hit.label).includes(wanted)),
     );
   }),
 

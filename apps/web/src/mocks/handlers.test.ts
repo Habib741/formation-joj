@@ -6,6 +6,7 @@ import {
   medalListSchema,
   nationAthleteListSchema,
   nationStandingListSchema,
+  searchHitListSchema,
   sportEventListSchema,
 } from '@joj/shared';
 import { describe, expect, it } from 'vitest';
@@ -158,6 +159,54 @@ describe('mock calendar and delegation API', () => {
 
   it('003-AS6: rejects a badly written nation with a 400 VALIDATION_FAILED problem', async () => {
     const { status, body } = await resultsPath('/athletes?date=2026-11-10&nation=senegal');
+
+    expect(status).toBe(400);
+    expect(body).toMatchObject({ status: 400, code: 'VALIDATION_FAILED' });
+  });
+});
+
+const searchApi = async (q: string) => {
+  const response = await fetch(`http://localhost/api/search?q=${encodeURIComponent(q)}`);
+  return { status: response.status, body: (await response.json()) as unknown };
+};
+
+describe('mock home, live and search API', () => {
+  it('004-AS3: returns the three latest finished events, from the latest to the oldest', async () => {
+    const { status, body } = await resultsPath('/latest');
+
+    expect(status).toBe(200);
+    expect(sportEventListSchema.parse(body).map((event) => event.startsAt)).toEqual([
+      '2026-11-10T10:00:00.000Z',
+      '2026-11-10T09:00:00.000Z',
+      '2026-11-08T18:32:00.000Z',
+    ]);
+  });
+
+  it('004-AS6: returns only the events in progress', async () => {
+    const { status, body } = await resultsPath('/live');
+
+    expect(status).toBe(200);
+    expect(sportEventListSchema.parse(body).map((event) => event.name)).toEqual([
+      'Saut en longueur femmes, finale',
+    ]);
+  });
+
+  it('004-AS4: finds an element without accents or capitals', async () => {
+    const { status, body } = await searchApi('SENEGAL');
+
+    expect(status).toBe(200);
+    expect(searchHitListSchema.parse(body)[0]).toMatchObject({ kind: 'nation', nation: 'sn' });
+  });
+
+  it('004-AS4: returns an empty list when nothing matches', async () => {
+    const { status, body } = await searchApi('zzz');
+
+    expect(status).toBe(200);
+    expect(body).toEqual([]);
+  });
+
+  it('004-AS4: rejects a text that is too short with a 400 VALIDATION_FAILED problem', async () => {
+    const { status, body } = await searchApi('a');
 
     expect(status).toBe(400);
     expect(body).toMatchObject({ status: 400, code: 'VALIDATION_FAILED' });
