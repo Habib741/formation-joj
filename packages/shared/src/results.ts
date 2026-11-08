@@ -61,7 +61,13 @@ export const SPORT_LABELS: Record<SportSlug, string> = {
   'wushu-taolu': 'Wushu taolu',
 };
 
-export const SPORT_EVENT_STATUSES = ['scheduled', 'in-progress', 'finished'] as const;
+/** `unpublished` : le jour de l'épreuve est passé et la source ne publie aucun podium. */
+export const SPORT_EVENT_STATUSES = [
+  'scheduled',
+  'in-progress',
+  'finished',
+  'unpublished',
+] as const;
 export const sportEventStatusSchema = z.enum(SPORT_EVENT_STATUSES);
 export type SportEventStatus = z.infer<typeof sportEventStatusSchema>;
 
@@ -82,6 +88,9 @@ export const gamesDaySchema = z.iso
 
 /** Le fuseau des Jeux, utilisé par défaut pour afficher les horaires. */
 export const DAKAR_TIME_ZONE = 'Africa/Dakar';
+
+/** Le code d'une équipe réunissant plusieurs nations : il n'est celui d'aucune nation. */
+export const MIXED_TEAM_CODE = 'xx';
 
 /** Le code à deux lettres d'une nation, comme `sn`. */
 export const nationCodeSchema = z.string().regex(/^[a-z]{2}$/);
@@ -144,3 +153,12 @@ export const nationAthleteSchema = z.object({
 export type NationAthleteResponse = z.infer<typeof nationAthleteSchema>;
 
 export const nationAthleteListSchema = z.array(nationAthleteSchema);
+
+/** D'où viennent les résultats affichés, et de quel jour date leur extraction. */
+export const dataSourceSchema = z.object({
+  name: z.string(),
+  license: z.string(),
+  url: z.url(),
+  extractedOn: z.iso.date(),
+});
+export type DataSourceResponse = z.infer<typeof dataSourceSchema>;

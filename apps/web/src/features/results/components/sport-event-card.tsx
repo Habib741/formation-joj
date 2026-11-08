@@ -14,6 +14,7 @@ const STATUS_STYLES: Record<SportEventStatus, string> = {
   scheduled: 'bg-muted text-foreground',
   'in-progress': 'bg-joj-pale-yellow text-foreground',
   finished: 'bg-accent text-primary',
+  unpublished: 'bg-muted text-muted-foreground',
 };
 
 const MEDAL_STYLES: Record<number, string> = {

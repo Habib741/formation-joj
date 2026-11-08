@@ -99,7 +99,7 @@ Chaque scénario de la spec est prouvé par au moins un test, au niveau le plus 
 
 Six tâches, dans l'ordre des couches. Chaque tâche nomme le test à écrire d'abord et cite les scénarios qu'elle couvre ; elle tient dans un commit.
 
-- [ ] T01 [005-AS5] Écrire d'abord `medals/domain/medal-gaps.spec.ts` (« 005-AS5: … »), puis les schémas partagés et `findMedalGaps`
+- [x] T01 [005-AS5] Écrire d'abord `medals/domain/medal-gaps.spec.ts` (« 005-AS5: … »), puis les schémas partagés et `findMedalGaps`
 - [ ] T02 [005-AS2, AS5] Écrire d'abord les tests dans `results/application/results.application.spec.ts` et `medals/application/medals.application.spec.ts` (« 005-AS2: … », « 005-AS5: … »), puis les ports, les repositories en mémoire, `GetDataSource`, `ListMedalGaps` et `DATA_SOURCE_NOT_FOUND`
 - [ ] T03 [005-AS2, AS5] Écrire d'abord les tests dans `results/infra/drizzle-sport-event.repository.int.spec.ts` et `medals/infra/drizzle-medal.repository.int.spec.ts` (« 005-AS2: … », « 005-AS5: … »), puis les colonnes, la table, la contrainte assouplie, la migration générée et les repositories
 - [ ] T04 [005-AS2, AS5] Écrire d'abord les tests dans `apps/api/test/results.e2e.spec.ts` et `apps/api/test/medals.e2e.spec.ts` (« 005-AS2: … », « 005-AS5: … »), puis les deux routes

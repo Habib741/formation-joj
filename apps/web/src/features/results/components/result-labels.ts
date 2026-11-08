@@ -6,6 +6,7 @@ export const STATUS_LABELS: Record<SportEventStatus, string> = {
   scheduled: 'Programmé',
   'in-progress': 'En cours',
   finished: 'Terminé',
+  unpublished: 'Résultat non publié',
 };
 
 export const MENTION_LABELS: Record<RankingMention, string> = {

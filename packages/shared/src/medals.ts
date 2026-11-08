@@ -55,3 +55,18 @@ export const medalSchema = z.object({
 export type MedalResponse = z.infer<typeof medalSchema>;
 
 export const medalListSchema = z.array(medalSchema);
+
+/** Une nation dont les podiums importés diffèrent du tableau annoncé par la source. */
+export const medalGapSchema = z.object({
+  nationCode: z.string(),
+  nationName: z.string(),
+  gold: z.number().int().nonnegative(),
+  silver: z.number().int().nonnegative(),
+  bronze: z.number().int().nonnegative(),
+  announcedGold: z.number().int().nonnegative(),
+  announcedSilver: z.number().int().nonnegative(),
+  announcedBronze: z.number().int().nonnegative(),
+});
+export type MedalGapResponse = z.infer<typeof medalGapSchema>;
+
+export const medalGapListSchema = z.array(medalGapSchema);
