@@ -17,6 +17,7 @@ export interface NationAthlete {
   eventName: string;
   sport: SportSlug;
   startsAt: Date;
+  hasStartTime: boolean;
   status: SportEventStatus;
 }
 
@@ -25,6 +26,7 @@ export interface SportEventProps {
   sport: SportSlug;
   name: string;
   startsAt: Date;
+  hasStartTime: boolean;
   status: SportEventStatus;
   awardsMedals: boolean;
   entries: RankingEntry[];
@@ -55,6 +57,10 @@ export class SportEvent {
     return this.props.startsAt;
   }
 
+  get hasStartTime(): boolean {
+    return this.props.hasStartTime;
+  }
+
   get status(): SportEventStatus {
     return this.props.status;
   }
@@ -83,6 +89,7 @@ export class SportEvent {
         eventName: this.name,
         sport: this.sport,
         startsAt: this.startsAt,
+        hasStartTime: this.hasStartTime,
         status: this.status,
       }));
   }

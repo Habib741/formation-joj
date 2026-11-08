@@ -134,6 +134,7 @@ export const sportEventSchema = z.object({
   sport: sportSlugSchema,
   name: z.string(),
   startsAt: z.iso.datetime(),
+  hasStartTime: z.boolean(),
   status: sportEventStatusSchema,
   ranking: z.array(rankingEntrySchema),
 });
@@ -148,6 +149,7 @@ export const nationAthleteSchema = z.object({
   eventName: z.string(),
   sport: sportSlugSchema,
   startsAt: z.iso.datetime(),
+  hasStartTime: z.boolean(),
   status: sportEventStatusSchema,
 });
 export type NationAthleteResponse = z.infer<typeof nationAthleteSchema>;

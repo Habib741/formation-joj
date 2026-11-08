@@ -45,7 +45,13 @@ export class DrizzleMedalRepository extends MedalRepository {
     return (await this.db.select().from(nations)).map(toNation);
   }
 
-  listAnnouncedMedals(): Promise<AnnouncedMedals[]> {
-    throw new Error('non implémenté');
+  async listAnnouncedMedals(): Promise<AnnouncedMedals[]> {
+    const rows = await this.db.select().from(nations);
+    return rows.map((row) => ({
+      nationCode: row.code,
+      gold: row.announcedGold,
+      silver: row.announcedSilver,
+      bronze: row.announcedBronze,
+    }));
   }
 }

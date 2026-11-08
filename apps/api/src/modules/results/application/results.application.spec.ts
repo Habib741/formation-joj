@@ -17,6 +17,7 @@ function sportEvent(sport: SportSlug, name: string, startsAt: string): SportEven
     sport,
     name,
     startsAt: new Date(startsAt),
+    hasStartTime: true,
     status: 'scheduled',
     awardsMedals: true,
     entries: [],
@@ -36,6 +37,7 @@ function eventWithStatus(
     sport,
     name,
     startsAt: new Date(startsAt),
+    hasStartTime: true,
     status,
     awardsMedals,
     entries: participants.map(([nationCode, competitor]) => ({

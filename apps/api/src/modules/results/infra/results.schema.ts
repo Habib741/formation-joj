@@ -3,6 +3,7 @@ import { sql } from 'drizzle-orm';
 import {
   boolean,
   check,
+  date,
   integer,
   pgTable,
   timestamp,
@@ -22,6 +23,8 @@ export const sportEvents = pgTable(
     // Une finale attribue des médailles ; une manche ou une demi-finale, non.
     awardsMedals: boolean('awards_medals').notNull().default(false),
     startsAt: timestamp('starts_at', { withTimezone: true, precision: 3 }).notNull(),
+    // Faux quand la source ne donne pas l'heure : starts_at vaut alors minuit ce jour-là.
+    hasStartTime: boolean('has_start_time').notNull().default(false),
   },
   (table) => [uniqueIndex('sport_events_identity_key').on(table.sport, table.name, table.startsAt)],
 );
@@ -42,14 +45,23 @@ export const sportEventEntries = pgTable(
   },
   (table) => [
     uniqueIndex('sport_event_entries_competitor_key').on(table.eventId, table.competitor),
-    // Une participation a un rang et une performance, ou une mention seule, ou rien tant qu'elle n'est qu'inscrite.
+    // Une participation a un rang, avec ou sans performance, ou une mention seule, ou rien tant
+    // qu'elle n'est qu'inscrite. Une performance sans rang reste refusée.
     check(
       'sport_event_entries_rank_or_mention',
-      sql`(${table.rank} IS NOT NULL AND ${table.performance} IS NOT NULL AND ${table.mention} IS NULL)
+      sql`(${table.rank} IS NOT NULL AND ${table.mention} IS NULL)
         OR (${table.rank} IS NULL AND ${table.performance} IS NULL)`,
     ),
   ],
 );
+
+/** Une extraction des résultats : d'où ils viennent, et de quel jour ils datent. */
+export const dataExtractions = pgTable('data_extractions', {
+  extractedOn: date('extracted_on').primaryKey(),
+  sourceName: varchar('source_name', { length: 100 }).notNull(),
+  sourceUrl: varchar('source_url', { length: 300 }).notNull(),
+  license: varchar('license', { length: 50 }).notNull(),
+});
 
 export type SportEventRow = typeof sportEvents.$inferSelect;
 export type SportEventEntryRow = typeof sportEventEntries.$inferSelect;

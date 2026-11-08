@@ -29,6 +29,13 @@
       "when": 1794173856412,
       "tag": "0003_registered_participants",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794180758218,
+      "tag": "0004_real_results",
+      "breakpoints": true
     }
   ]
 }

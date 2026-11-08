@@ -87,7 +87,14 @@ describe('DrizzleMedalRepository (in-memory PGlite, migrations applied)', () => 
         entry(heatId, 'fr', 'Véliplanchiste', 1),
       ]);
     await connection.db.insert(nations).values([
-      { code: 'sn', name: 'Sénégal', continent: 'afrique' },
+      {
+        code: 'sn',
+        name: 'Sénégal',
+        continent: 'afrique',
+        announcedGold: 3,
+        announcedSilver: 0,
+        announcedBronze: 2,
+      },
       { code: 'tv', name: 'Tuvalu', continent: 'oceanie' },
     ]);
   });
@@ -134,5 +141,38 @@ describe('DrizzleMedalRepository (in-memory PGlite, migrations applied)', () => 
 
     expect(found.filter((medal) => medal.nationCode === 'br')).toHaveLength(1);
     expect(found.find((medal) => medal.nationCode === 'br')?.competitor).toBe('Équipe du Brésil');
+  });
+
+  it('005-AS5: reads the medals announced by the source', async () => {
+    expect(await repository.listAnnouncedMedals()).toEqual(
+      expect.arrayContaining([
+        { nationCode: 'sn', gold: 3, silver: 0, bronze: 2 },
+        { nationCode: 'tv', gold: 0, silver: 0, bronze: 0 },
+      ]),
+    );
+  });
+
+  it('005-AS5: saves a medalist without a performance, as in judo', async () => {
+    const judoId = randomUUID();
+    await connection.db.insert(sportEvents).values({
+      id: judoId,
+      sport: 'judo',
+      name: '-66 kg hommes',
+      status: 'finished',
+      awardsMedals: true,
+      startsAt: new Date('2026-11-13T09:00:00.000Z'),
+    });
+    await connection.db.insert(sportEventEntries).values({
+      id: randomUUID(),
+      eventId: judoId,
+      nationCode: 'sn',
+      nationName: 'Sénégal',
+      competitor: 'Matar Diop',
+      rank: 3,
+    });
+
+    const found = await repository.listMedals();
+
+    expect(found.find((medal) => medal.eventId === judoId)?.type).toBe('bronze');
   });
 });

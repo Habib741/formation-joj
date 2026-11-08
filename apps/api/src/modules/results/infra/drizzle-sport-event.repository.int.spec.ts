@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { type DatabaseConnection, openDatabase } from '../../../core/database/database';
 import { DrizzleSportEventRepository } from './drizzle-sport-event.repository';
-import { sportEventEntries, sportEvents } from './results.schema';
+import { dataExtractions, sportEventEntries, sportEvents } from './results.schema';
 
 const finalId = randomUUID();
 const scheduledId = randomUUID();
@@ -88,7 +88,7 @@ describe('DrizzleSportEventRepository (in-memory PGlite, migrations applied)', (
     ]);
   });
 
-  it('003-AS6: still refuses a rank without a performance', async () => {
+  it('003-AS6: still refuses a performance without a rank', async () => {
     await expect(
       connection.db.insert(sportEventEntries).values({
         id: randomUUID(),
@@ -96,7 +96,7 @@ describe('DrizzleSportEventRepository (in-memory PGlite, migrations applied)', (
         nationCode: 'br',
         nationName: 'Brésil',
         competitor: 'Équipe du Brésil',
-        rank: 1,
+        performance: '10,28 s',
       }),
     ).rejects.toThrow('Failed query');
   });
@@ -151,5 +151,55 @@ describe('DrizzleSportEventRepository (in-memory PGlite, migrations applied)', (
 
       expect(found.map((sportEvent) => sportEvent.name)).toEqual(['En cours tôt', 'En cours tard']);
     });
+  });
+
+  it('005-AS2: finds no data source before any extraction', async () => {
+    expect(await repository.findDataSource()).toBeNull();
+  });
+
+  it('005-AS2: reads the source of the latest extraction', async () => {
+    const extraction = {
+      sourceName: 'Wikipédia',
+      sourceUrl: 'https://en.wikipedia.org/wiki/2026_Summer_Youth_Olympics',
+      license: 'CC BY-SA',
+    };
+    await connection.db.insert(dataExtractions).values([
+      { ...extraction, extractedOn: '2026-11-07' },
+      { ...extraction, extractedOn: '2026-11-08' },
+    ]);
+
+    expect(await repository.findDataSource()).toEqual({
+      name: 'Wikipédia',
+      license: 'CC BY-SA',
+      url: 'https://en.wikipedia.org/wiki/2026_Summer_Youth_Olympics',
+      extractedOn: '2026-11-08',
+    });
+  });
+
+  it('005-AS1: reads whether the time of an event is known', async () => {
+    await connection.db.insert(sportEvents).values([
+      {
+        id: randomUUID(),
+        sport: 'voile',
+        name: 'Heure connue',
+        status: 'scheduled',
+        hasStartTime: true,
+        startsAt: new Date('2026-11-13T10:00:00.000Z'),
+      },
+      {
+        id: randomUUID(),
+        sport: 'voile',
+        name: 'Heure inconnue',
+        status: 'scheduled',
+        startsAt: new Date('2026-11-13T00:00:00.000Z'),
+      },
+    ]);
+
+    const found = await repository.listByDay('2026-11-13', 'voile');
+
+    expect(found.map(({ name, hasStartTime }) => [name, hasStartTime])).toEqual([
+      ['Heure inconnue', false],
+      ['Heure connue', true],
+    ]);
   });
 });

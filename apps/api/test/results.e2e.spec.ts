@@ -138,6 +138,7 @@ describe('/api/results (e2e)', () => {
       sport: 'athletisme',
       name: '100 m hommes, finale',
       startsAt: '2026-11-08T18:32:00.000Z',
+      hasStartTime: false,
       status: 'finished',
       ranking: [
         {
@@ -187,6 +188,7 @@ describe('/api/results (e2e)', () => {
         eventName: '-60 kg hommes, finale',
         sport: 'judo',
         startsAt: '2026-11-08T10:00:00.000Z',
+        hasStartTime: false,
         status: 'finished',
       },
       {
@@ -195,6 +197,7 @@ describe('/api/results (e2e)', () => {
         eventName: 'Demi-finale',
         sport: 'futsal',
         startsAt: '2026-11-08T20:00:00.000Z',
+        hasStartTime: false,
         status: 'scheduled',
       },
     ]);

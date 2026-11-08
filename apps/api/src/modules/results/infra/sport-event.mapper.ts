@@ -9,6 +9,7 @@ export function toDomain(row: SportEventRow, entryRows: SportEventEntryRow[]): S
     sport: sportSlugSchema.parse(row.sport),
     name: row.name,
     startsAt: row.startsAt,
+    hasStartTime: row.hasStartTime,
     status: sportEventStatusSchema.parse(row.status),
     awardsMedals: row.awardsMedals,
     entries: entryRows.map(toEntry),

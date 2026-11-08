@@ -6,7 +6,12 @@ import { DATABASE } from '../../../core/database/database.module';
 import { SportEventRepository } from '../application/sport-event.repository';
 import type { DataSource } from '../domain/data-source';
 import type { SportEvent } from '../domain/sport-event';
-import { sportEventEntries, type SportEventRow, sportEvents } from './results.schema';
+import {
+  dataExtractions,
+  sportEventEntries,
+  type SportEventRow,
+  sportEvents,
+} from './results.schema';
 import { toDomain } from './sport-event.mapper';
 
 const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
@@ -54,8 +59,19 @@ export class DrizzleSportEventRepository extends SportEventRepository {
     return this.withEntries(rows);
   }
 
-  findDataSource(): Promise<DataSource | null> {
-    throw new Error('non implémenté');
+  async findDataSource(): Promise<DataSource | null> {
+    const [latest] = await this.db
+      .select()
+      .from(dataExtractions)
+      .orderBy(desc(dataExtractions.extractedOn))
+      .limit(1);
+    if (latest === undefined) return null;
+    return {
+      name: latest.sourceName,
+      license: latest.license,
+      url: latest.sourceUrl,
+      extractedOn: latest.extractedOn,
+    };
   }
 
   private async withEntries(rows: SportEventRow[]): Promise<SportEvent[]> {

@@ -72,6 +72,7 @@ function toResponse(event: SportEvent): SportEventResponse {
     sport: event.sport,
     name: event.name,
     startsAt: event.startsAt.toISOString(),
+    hasStartTime: event.hasStartTime,
     status: event.status,
     ranking: event.ranking,
   };

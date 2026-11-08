@@ -150,6 +150,7 @@ export const handlers: RequestHandler[] = [
               eventName: event.name,
               sport: event.sport,
               startsAt: event.startsAt,
+              hasStartTime: event.hasStartTime,
               status: event.status,
             })),
         )

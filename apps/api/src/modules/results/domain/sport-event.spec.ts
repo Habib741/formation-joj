@@ -19,6 +19,7 @@ function sportEvent(status: SportEventStatus, entries: RankingEntry[]): SportEve
     sport: 'athletisme',
     name: '100 m hommes, finale',
     startsAt: new Date('2026-11-08T18:32:00.000Z'),
+    hasStartTime: true,
     status,
     awardsMedals: true,
     entries,
@@ -82,6 +83,7 @@ describe('SportEvent', () => {
         eventName: '100 m hommes, finale',
         sport: 'athletisme',
         startsAt: new Date('2026-11-08T18:32:00.000Z'),
+        hasStartTime: true,
         status: 'scheduled',
       },
     ]);

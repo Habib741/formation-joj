@@ -17,6 +17,7 @@ export const sprintFinal: SportEventResponse = {
   sport: 'athletisme',
   name: '100 m hommes, finale',
   startsAt: '2026-11-08T18:32:00.000Z',
+  hasStartTime: true,
   status: 'finished',
   ranking: [
     {
@@ -59,6 +60,7 @@ export const longJump: SportEventResponse = {
   sport: 'athletisme',
   name: 'Saut en longueur femmes, finale',
   startsAt: '2026-11-08T19:00:00.000Z',
+  hasStartTime: true,
   status: 'in-progress',
   ranking: [],
 };
@@ -68,6 +70,7 @@ export const futsalSemiFinal: SportEventResponse = {
   sport: 'futsal',
   name: 'Hommes, demi-finale',
   startsAt: '2026-11-08T20:30:00.000Z',
+  hasStartTime: true,
   status: 'scheduled',
   ranking: [],
 };
@@ -83,6 +86,7 @@ export const judoFinal: SportEventResponse = {
   sport: 'judo',
   name: '-60 kg hommes, finale',
   startsAt: '2026-11-07T17:00:00.000Z',
+  hasStartTime: true,
   status: 'scheduled',
   ranking: [],
 };
@@ -100,6 +104,7 @@ const followingDays: SportEventResponse[] = [
     sport: 'natation',
     name: '100 m nage libre femmes, finale',
     startsAt: '2026-11-09T18:00:00.000Z',
+    hasStartTime: true,
     status: 'scheduled',
     ranking: [],
   },
@@ -108,6 +113,7 @@ const followingDays: SportEventResponse[] = [
     sport: 'judo',
     name: '+73 kg femmes, finale',
     startsAt: '2026-11-09T10:00:00.000Z',
+    hasStartTime: true,
     status: 'scheduled',
     ranking: [],
   },
@@ -116,6 +122,7 @@ const followingDays: SportEventResponse[] = [
     sport: 'athletisme',
     name: '100 m hommes, finale',
     startsAt: '2026-11-10T09:00:00.000Z',
+    hasStartTime: true,
     status: 'finished',
     ranking: [
       {
@@ -141,6 +148,7 @@ const followingDays: SportEventResponse[] = [
     sport: 'cyclisme-sur-route',
     name: 'Course en ligne femmes',
     startsAt: '2026-11-10T10:00:00.000Z',
+    hasStartTime: true,
     status: 'finished',
     ranking: [
       {
@@ -158,6 +166,7 @@ const followingDays: SportEventResponse[] = [
     sport: 'futsal',
     name: 'Hommes, finale',
     startsAt: '2026-11-10T20:30:00.000Z',
+    hasStartTime: true,
     status: 'scheduled',
     ranking: [],
   },
@@ -177,6 +186,7 @@ const olderFinal: SportEventResponse = {
   sport: 'boxe',
   name: 'Ancienne finale',
   startsAt: '2026-11-06T10:00:00.000Z',
+  hasStartTime: true,
   status: 'finished',
   ranking: [],
 };
