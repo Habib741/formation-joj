@@ -1,9 +1,11 @@
 import { randomUUID } from 'node:crypto';
-import type { SportSlug } from '@joj/shared';
+import type { SportEventStatus, SportSlug } from '@joj/shared';
 import { describe, expect, it } from 'vitest';
 import { SportEvent } from '../domain/sport-event';
 import { InMemorySportEventRepository } from './testing/in-memory-sport-event.repository';
+import { ListDayCalendar } from './use-cases/list-day-calendar';
 import { ListDayResults } from './use-cases/list-day-results';
+import { ListNationAthletes } from './use-cases/list-nation-athletes';
 
 function sportEvent(sport: SportSlug, name: string, startsAt: string): SportEvent {
   return SportEvent.restore({
@@ -13,6 +15,30 @@ function sportEvent(sport: SportSlug, name: string, startsAt: string): SportEven
     startsAt: new Date(startsAt),
     status: 'scheduled',
     entries: [],
+  });
+}
+
+function eventWithStatus(
+  sport: SportSlug,
+  name: string,
+  status: SportEventStatus,
+  participants: [nationCode: string, competitor: string][] = [],
+  startsAt = '2026-11-08T10:00:00.000Z',
+): SportEvent {
+  return SportEvent.restore({
+    id: randomUUID(),
+    sport,
+    name,
+    startsAt: new Date(startsAt),
+    status,
+    entries: participants.map(([nationCode, competitor]) => ({
+      rank: null,
+      nationCode,
+      nationName: nationCode,
+      competitor,
+      performance: null,
+      mention: null,
+    })),
   });
 }
 
@@ -27,5 +53,92 @@ describe('results (application layer)', () => {
     const events = await new ListDayResults(repository).execute({ date: '2026-11-08' });
 
     expect(events.map((event) => event.name)).toEqual(['3 000 m', '100 m, finale', 'Demi-finale']);
+  });
+
+  it('003-AS1: the calendar of a day keeps only the scheduled events', async () => {
+    const repository = new InMemorySportEventRepository([
+      eventWithStatus('futsal', 'Hommes, demi-finale', 'scheduled'),
+      eventWithStatus('athletisme', '100 m hommes, finale', 'finished'),
+      eventWithStatus('athletisme', 'Saut en longueur', 'in-progress'),
+    ]);
+
+    const events = await new ListDayCalendar(repository).execute({ date: '2026-11-08' });
+
+    expect(events.map((event) => event.name)).toEqual(['Hommes, demi-finale']);
+  });
+
+  it('003-AS2: the calendar keeps only the chosen sport', async () => {
+    const repository = new InMemorySportEventRepository([
+      eventWithStatus('natation', '100 m nage libre', 'scheduled'),
+      eventWithStatus('judo', '-73 kg', 'scheduled'),
+    ]);
+
+    const events = await new ListDayCalendar(repository).execute({
+      date: '2026-11-08',
+      sport: 'natation',
+    });
+
+    expect(events.map((event) => event.sport)).toEqual(['natation']);
+  });
+
+  it('003-AS5: the results of a day keep only the events of the chosen nation', async () => {
+    const repository = new InMemorySportEventRepository([
+      eventWithStatus('athletisme', '100 m hommes, finale', 'finished', [['sn', 'Awa Diop']]),
+      eventWithStatus('cyclisme-sur-route', 'Course en ligne femmes', 'finished', [
+        ['no', 'Cycliste'],
+      ]),
+    ]);
+
+    const events = await new ListDayResults(repository).execute({
+      date: '2026-11-08',
+      nation: 'sn',
+    });
+
+    expect(events.map((event) => event.name)).toEqual(['100 m hommes, finale']);
+  });
+
+  it('003-AS6: lists the athletes of a nation for the day, by time then by name', async () => {
+    const repository = new InMemorySportEventRepository([
+      eventWithStatus(
+        'futsal',
+        'Hommes, demi-finale',
+        'scheduled',
+        [
+          ['sn', 'Équipe du Sénégal'],
+          ['br', 'Équipe du Brésil'],
+        ],
+        '2026-11-08T20:30:00.000Z',
+      ),
+      eventWithStatus(
+        'athletisme',
+        '100 m hommes, finale',
+        'finished',
+        [
+          ['sn', 'Moussa Fall'],
+          ['sn', 'Awa Diop'],
+        ],
+        '2026-11-08T09:00:00.000Z',
+      ),
+      eventWithStatus(
+        'judo',
+        'Lendemain',
+        'scheduled',
+        [['sn', 'Absent']],
+        '2026-11-09T09:00:00.000Z',
+      ),
+    ]);
+
+    const athletes = await new ListNationAthletes(repository).execute({
+      date: '2026-11-08',
+      nation: 'sn',
+    });
+
+    expect(
+      athletes.map(({ competitor, eventName, status }) => [competitor, eventName, status]),
+    ).toEqual([
+      ['Awa Diop', '100 m hommes, finale', 'finished'],
+      ['Moussa Fall', '100 m hommes, finale', 'finished'],
+      ['Équipe du Sénégal', 'Hommes, demi-finale', 'scheduled'],
+    ]);
   });
 });
