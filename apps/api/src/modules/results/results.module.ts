@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SportEventRepository } from './application/sport-event.repository';
+import { GetDataSource } from './application/use-cases/get-data-source';
 import { ListDayCalendar } from './application/use-cases/list-day-calendar';
 import { ListDayResults } from './application/use-cases/list-day-results';
 import { ListLatestResults } from './application/use-cases/list-latest-results';
@@ -18,6 +19,7 @@ import { DrizzleSportEventRepository } from './infra/drizzle-sport-event.reposit
     ListNationAthletes,
     ListLatestResults,
     ListLiveEvents,
+    GetDataSource,
   ],
 })
 export class ResultsModule {}

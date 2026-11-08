@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { INestApplication } from '@nestjs/common';
-import { medalListSchema, nationStandingListSchema } from '@joj/shared';
+import { medalGapListSchema, medalListSchema, nationStandingListSchema } from '@joj/shared';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Database } from '../src/core/database/database';
@@ -57,8 +57,8 @@ describe('/api/medals (e2e)', () => {
         entry(judoId, 'cn', 'Judoka Chine', 1),
       ]);
     await db.insert(nations).values([
-      { code: 'ke', name: 'Kenya', continent: 'afrique' },
-      { code: 'cn', name: 'Chine', continent: 'asie' },
+      { code: 'ke', name: 'Kenya', continent: 'afrique', announcedGold: 2 },
+      { code: 'cn', name: 'Chine', continent: 'asie', announcedGold: 1, announcedSilver: 1 },
       { code: 'tv', name: 'Tuvalu', continent: 'oceanie' },
     ]);
   });
@@ -146,5 +146,27 @@ describe('/api/medals (e2e)', () => {
     const response = await api().get('/api/medals').query({ sport: 'voile' }).expect(200);
 
     expect(response.body).toEqual([]);
+  });
+
+  it('005-AS5: reports the gaps, and keeps the standings computed from the podiums', async () => {
+    const gaps = await api().get('/api/medals/gaps').expect(200);
+    expect(medalGapListSchema.parse(gaps.body)).toEqual([
+      {
+        nationCode: 'ke',
+        nationName: 'Kenya',
+        gold: 1,
+        silver: 0,
+        bronze: 0,
+        announcedGold: 2,
+        announcedSilver: 0,
+        announcedBronze: 0,
+      },
+    ]);
+
+    const standings = await api().get('/api/medals/standings').expect(200);
+    expect(nationStandingListSchema.parse(standings.body)[1]).toMatchObject({
+      nationCode: 'ke',
+      gold: 1,
+    });
   });
 });

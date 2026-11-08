@@ -2,6 +2,8 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
   calendarQuerySchema,
+  type DataSourceResponse,
+  dataSourceSchema,
   dayResultsQuerySchema,
   type NationAthleteResponse,
   nationAthleteSchema,
@@ -10,6 +12,7 @@ import {
   sportEventSchema,
 } from '@joj/shared';
 import { createZodDto, ZodSerializerDto } from 'nestjs-zod';
+import { GetDataSource } from '../application/use-cases/get-data-source';
 import { ListDayCalendar } from '../application/use-cases/list-day-calendar';
 import { ListDayResults } from '../application/use-cases/list-day-results';
 import { ListLatestResults } from '../application/use-cases/list-latest-results';
@@ -22,6 +25,7 @@ class CalendarQueryDto extends createZodDto(calendarQuerySchema) {}
 class NationAthletesQueryDto extends createZodDto(nationAthletesQuerySchema) {}
 class SportEventDto extends createZodDto(sportEventSchema) {}
 class NationAthleteDto extends createZodDto(nationAthleteSchema) {}
+class DataSourceDto extends createZodDto(dataSourceSchema) {}
 
 /** Couche fine : valider (DTO zod), appeler un cas d'usage, sérialiser. Aucune règle métier ici. */
 @ApiTags('results')
@@ -33,12 +37,19 @@ export class ResultsController {
     private readonly listNationAthletes: ListNationAthletes,
     private readonly listLatestResults: ListLatestResults,
     private readonly listLiveEvents: ListLiveEvents,
+    private readonly getDataSource: GetDataSource,
   ) {}
 
   @Get()
   @ZodSerializerDto([SportEventDto])
   async list(@Query() query: DayResultsQueryDto): Promise<SportEventResponse[]> {
     return (await this.listDayResults.execute(query)).map(toResponse);
+  }
+
+  @Get('source')
+  @ZodSerializerDto(DataSourceDto)
+  source(): Promise<DataSourceResponse> {
+    return this.getDataSource.execute();
   }
 
   @Get('latest')

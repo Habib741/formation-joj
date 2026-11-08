@@ -1,11 +1,15 @@
 import { randomUUID } from 'node:crypto';
 import type { INestApplication } from '@nestjs/common';
-import { nationAthleteListSchema, sportEventListSchema } from '@joj/shared';
+import { dataSourceSchema, nationAthleteListSchema, sportEventListSchema } from '@joj/shared';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Database } from '../src/core/database/database';
 import { DATABASE } from '../src/core/database/database.module';
-import { sportEventEntries, sportEvents } from '../src/modules/results/infra/results.schema';
+import {
+  dataExtractions,
+  sportEventEntries,
+  sportEvents,
+} from '../src/modules/results/infra/results.schema';
 import { createTestApp } from './create-test-app';
 
 const finalId = randomUUID();
@@ -226,5 +230,25 @@ describe('/api/results (e2e)', () => {
     expect(sportEventListSchema.parse(response.body)).toEqual([
       expect.objectContaining({ id: liveId, status: 'in-progress', ranking: [] }),
     ]);
+  });
+
+  it('005-AS2: refuses when no extraction is loaded, then returns the source', async () => {
+    const missing = await api().get('/api/results/source').expect(404);
+    expect(missing.body).toMatchObject({ status: 404, code: 'DATA_SOURCE_NOT_FOUND' });
+
+    await app.get<Database>(DATABASE).insert(dataExtractions).values({
+      extractedOn: '2026-11-08',
+      sourceName: 'Wikipédia',
+      sourceUrl: 'https://en.wikipedia.org/wiki/2026_Summer_Youth_Olympics',
+      license: 'CC BY-SA',
+    });
+
+    const response = await api().get('/api/results/source').expect(200);
+    expect(dataSourceSchema.parse(response.body)).toEqual({
+      name: 'Wikipédia',
+      license: 'CC BY-SA',
+      url: 'https://en.wikipedia.org/wiki/2026_Summer_Youth_Olympics',
+      extractedOn: '2026-11-08',
+    });
   });
 });
