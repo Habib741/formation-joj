@@ -1,6 +1,6 @@
 # 001 — Consulter les résultats d'une journée
 
-**Statut** : Validée
+**Statut** : Implémentée
 **PRD** : specs/prd-jojpulse.md, TR1
 
 ## Contexte
