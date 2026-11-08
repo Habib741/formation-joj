@@ -1,4 +1,5 @@
 import type { SportSlug } from '@joj/shared';
+import type { DataSource } from '../domain/data-source';
 import type { SportEvent } from '../domain/sport-event';
 
 /**
@@ -14,4 +15,7 @@ export abstract class SportEventRepository {
 
   /** Les épreuves en cours, triées par heure puis par sport. */
   abstract listInProgress(): Promise<SportEvent[]>;
+
+  /** La source de l'extraction la plus récente, ou `null` si aucune n'est chargée. */
+  abstract findDataSource(): Promise<DataSource | null>;
 }

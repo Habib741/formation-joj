@@ -1,4 +1,5 @@
 import type { Medal } from '../domain/medal';
+import type { AnnouncedMedals } from '../domain/medal-gaps';
 import type { Nation } from '../domain/nation-standings';
 
 /**
@@ -11,4 +12,7 @@ export abstract class MedalRepository {
 
   /** Toutes les nations des Jeux, médaillées ou non. */
   abstract listNations(): Promise<Nation[]>;
+
+  /** Le tableau des médailles annoncé par la source, nation par nation. */
+  abstract listAnnouncedMedals(): Promise<AnnouncedMedals[]>;
 }

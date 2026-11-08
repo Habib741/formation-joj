@@ -5,6 +5,7 @@ import { DATABASE } from '../../../core/database/database.module';
 import { sportEventEntries, sportEvents } from '../../results/infra/results.schema';
 import { MedalRepository } from '../application/medal.repository';
 import type { Medal } from '../domain/medal';
+import type { AnnouncedMedals } from '../domain/medal-gaps';
 import type { Nation } from '../domain/nation-standings';
 import { toMedal, toNation } from './medal.mapper';
 import { nations } from './medals.schema';
@@ -42,5 +43,9 @@ export class DrizzleMedalRepository extends MedalRepository {
 
   async listNations(): Promise<Nation[]> {
     return (await this.db.select().from(nations)).map(toNation);
+  }
+
+  listAnnouncedMedals(): Promise<AnnouncedMedals[]> {
+    throw new Error('non implémenté');
   }
 }

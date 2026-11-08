@@ -4,6 +4,7 @@ import { and, asc, desc, eq, gte, inArray, lt } from 'drizzle-orm';
 import type { Database } from '../../../core/database/database';
 import { DATABASE } from '../../../core/database/database.module';
 import { SportEventRepository } from '../application/sport-event.repository';
+import type { DataSource } from '../domain/data-source';
 import type { SportEvent } from '../domain/sport-event';
 import { sportEventEntries, type SportEventRow, sportEvents } from './results.schema';
 import { toDomain } from './sport-event.mapper';
@@ -51,6 +52,10 @@ export class DrizzleSportEventRepository extends SportEventRepository {
       .where(eq(sportEvents.status, 'in-progress'))
       .orderBy(asc(sportEvents.startsAt), asc(sportEvents.sport));
     return this.withEntries(rows);
+  }
+
+  findDataSource(): Promise<DataSource | null> {
+    throw new Error('non implémenté');
   }
 
   private async withEntries(rows: SportEventRow[]): Promise<SportEvent[]> {

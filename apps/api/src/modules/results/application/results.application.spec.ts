@@ -3,6 +3,8 @@ import type { SportEventStatus, SportSlug } from '@joj/shared';
 import { describe, expect, it } from 'vitest';
 import { SportEvent } from '../domain/sport-event';
 import { InMemorySportEventRepository } from './testing/in-memory-sport-event.repository';
+import { DataSourceNotFoundError } from '../domain/data-source';
+import { GetDataSource } from './use-cases/get-data-source';
 import { ListDayCalendar } from './use-cases/list-day-calendar';
 import { ListDayResults } from './use-cases/list-day-results';
 import { ListLatestResults } from './use-cases/list-latest-results';
@@ -175,5 +177,29 @@ describe('results (application layer)', () => {
     const events = await new ListLiveEvents(repository).execute();
 
     expect(events.map((event) => event.name)).toEqual(['Plus tôt', 'Plus tard']);
+  });
+
+  it('005-AS2: gives the source of the data and the day of its extraction', async () => {
+    const source = {
+      name: 'Wikipédia',
+      license: 'CC BY-SA',
+      url: 'https://en.wikipedia.org/wiki/2026_Summer_Youth_Olympics',
+      extractedOn: '2026-11-08',
+    };
+    const repository = new InMemorySportEventRepository([], source);
+
+    expect(await new GetDataSource(repository).execute()).toEqual(source);
+  });
+
+  it('005-AS2: refuses when no extraction has been loaded', async () => {
+    const repository = new InMemorySportEventRepository();
+
+    await expect(new GetDataSource(repository).execute()).rejects.toMatchObject({
+      code: 'DATA_SOURCE_NOT_FOUND',
+      kind: 'NOT_FOUND',
+    });
+    await expect(new GetDataSource(repository).execute()).rejects.toBeInstanceOf(
+      DataSourceNotFoundError,
+    );
   });
 });

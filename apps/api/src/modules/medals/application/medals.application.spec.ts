@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { Medal } from '../domain/medal';
 import type { Nation } from '../domain/nation-standings';
 import { InMemoryMedalRepository } from './testing/in-memory-medal.repository';
+import { ListMedalGaps } from './use-cases/list-medal-gaps';
 import { ListMedals } from './use-cases/list-medals';
 import { ListNationStandings } from './use-cases/list-nation-standings';
 
@@ -74,5 +75,31 @@ describe('medals (application layer)', () => {
     const repository = new InMemoryMedalRepository([medal('ke', 'gold', 'athletisme')], []);
 
     expect(await new ListMedals(repository).execute({ sport: 'voile' })).toEqual([]);
+  });
+
+  it('005-AS5: compares the computed standings with the table of the source', async () => {
+    const repository = new InMemoryMedalRepository(
+      [...medals('pt', 1, 1, 1), ...medals('ng', 2, 0, 0)],
+      [nation('pt', 'Portugal', 'europe'), nation('ng', 'Nigeria', 'afrique')],
+      [
+        { nationCode: 'pt', gold: 2, silver: 1, bronze: 1 },
+        { nationCode: 'ng', gold: 2, silver: 0, bronze: 0 },
+      ],
+    );
+
+    const gaps = await new ListMedalGaps(repository).execute();
+
+    expect(gaps).toEqual([
+      {
+        nationCode: 'pt',
+        nationName: 'Portugal',
+        gold: 1,
+        silver: 1,
+        bronze: 1,
+        announcedGold: 2,
+        announcedSilver: 1,
+        announcedBronze: 1,
+      },
+    ]);
   });
 });

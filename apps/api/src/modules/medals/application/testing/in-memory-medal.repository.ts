@@ -1,4 +1,5 @@
 import type { Medal } from '../../domain/medal';
+import type { AnnouncedMedals } from '../../domain/medal-gaps';
 import type { Nation } from '../../domain/nation-standings';
 import { MedalRepository } from '../medal.repository';
 
@@ -7,6 +8,7 @@ export class InMemoryMedalRepository extends MedalRepository {
   constructor(
     private readonly medals: Medal[] = [],
     private readonly nations: Nation[] = [],
+    private readonly announced: AnnouncedMedals[] = [],
   ) {
     super();
   }
@@ -17,5 +19,9 @@ export class InMemoryMedalRepository extends MedalRepository {
 
   async listNations(): Promise<Nation[]> {
     return this.nations;
+  }
+
+  async listAnnouncedMedals(): Promise<AnnouncedMedals[]> {
+    return this.announced;
   }
 }
