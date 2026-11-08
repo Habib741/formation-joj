@@ -11,6 +11,7 @@ import { createTestApp } from './create-test-app';
 const finalId = randomUUID();
 const scheduledId = randomUUID();
 const judoId = randomUUID();
+const liveId = randomUUID();
 
 describe('/api/results (e2e)', () => {
   let app: INestApplication;
@@ -25,6 +26,7 @@ describe('/api/results (e2e)', () => {
         sport: 'athletisme',
         name: '100 m hommes, finale',
         status: 'finished',
+        awardsMedals: true,
         startsAt: new Date('2026-11-08T18:32:00.000Z'),
       },
       {
@@ -39,7 +41,15 @@ describe('/api/results (e2e)', () => {
         sport: 'judo',
         name: '-60 kg hommes, finale',
         status: 'finished',
+        awardsMedals: true,
         startsAt: new Date('2026-11-08T10:00:00.000Z'),
+      },
+      {
+        id: liveId,
+        sport: 'natation',
+        name: '100 m nage libre, finale',
+        status: 'in-progress',
+        startsAt: new Date('2026-11-09T10:00:00.000Z'),
       },
     ]);
     await db.insert(sportEventEntries).values([
@@ -197,5 +207,21 @@ describe('/api/results (e2e)', () => {
       .expect(400);
 
     expect(response.body).toMatchObject({ status: 400, code: 'VALIDATION_FAILED' });
+  });
+
+  it('004-AS3: returns the latest finished events, with their ranking', async () => {
+    const response = await api().get('/api/results/latest').expect(200);
+
+    const events = sportEventListSchema.parse(response.body);
+    expect(events.map((event) => event.id)).toEqual([finalId, judoId]);
+    expect(events[1]?.ranking.map((entry) => entry.nationCode)).toEqual(['jp', 'sn']);
+  });
+
+  it('004-AS6: returns only the events in progress', async () => {
+    const response = await api().get('/api/results/live').expect(200);
+
+    expect(sportEventListSchema.parse(response.body)).toEqual([
+      expect.objectContaining({ id: liveId, status: 'in-progress', ranking: [] }),
+    ]);
   });
 });

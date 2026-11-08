@@ -12,6 +12,8 @@ import {
 import { createZodDto, ZodSerializerDto } from 'nestjs-zod';
 import { ListDayCalendar } from '../application/use-cases/list-day-calendar';
 import { ListDayResults } from '../application/use-cases/list-day-results';
+import { ListLatestResults } from '../application/use-cases/list-latest-results';
+import { ListLiveEvents } from '../application/use-cases/list-live-events';
 import { ListNationAthletes } from '../application/use-cases/list-nation-athletes';
 import type { NationAthlete, SportEvent } from '../domain/sport-event';
 
@@ -29,12 +31,26 @@ export class ResultsController {
     private readonly listDayResults: ListDayResults,
     private readonly listDayCalendar: ListDayCalendar,
     private readonly listNationAthletes: ListNationAthletes,
+    private readonly listLatestResults: ListLatestResults,
+    private readonly listLiveEvents: ListLiveEvents,
   ) {}
 
   @Get()
   @ZodSerializerDto([SportEventDto])
   async list(@Query() query: DayResultsQueryDto): Promise<SportEventResponse[]> {
     return (await this.listDayResults.execute(query)).map(toResponse);
+  }
+
+  @Get('latest')
+  @ZodSerializerDto([SportEventDto])
+  async latest(): Promise<SportEventResponse[]> {
+    return (await this.listLatestResults.execute()).map(toResponse);
+  }
+
+  @Get('live')
+  @ZodSerializerDto([SportEventDto])
+  async live(): Promise<SportEventResponse[]> {
+    return (await this.listLiveEvents.execute()).map(toResponse);
   }
 
   @Get('calendar')
