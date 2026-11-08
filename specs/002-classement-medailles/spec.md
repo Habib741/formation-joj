@@ -1,6 +1,6 @@
 # 002 — Classement des nations et médailles
 
-**Statut** : Validée
+**Statut** : Implémentée
 **PRD** : specs/prd-jojpulse.md, TR2
 
 ## Contexte
