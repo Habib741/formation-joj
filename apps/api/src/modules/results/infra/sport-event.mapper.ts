@@ -10,6 +10,7 @@ export function toDomain(row: SportEventRow, entryRows: SportEventEntryRow[]): S
     name: row.name,
     startsAt: row.startsAt,
     status: sportEventStatusSchema.parse(row.status),
+    awardsMedals: row.awardsMedals,
     entries: entryRows.map(toEntry),
   });
 }

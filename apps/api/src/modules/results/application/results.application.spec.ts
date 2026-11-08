@@ -5,6 +5,8 @@ import { SportEvent } from '../domain/sport-event';
 import { InMemorySportEventRepository } from './testing/in-memory-sport-event.repository';
 import { ListDayCalendar } from './use-cases/list-day-calendar';
 import { ListDayResults } from './use-cases/list-day-results';
+import { ListLatestResults } from './use-cases/list-latest-results';
+import { ListLiveEvents } from './use-cases/list-live-events';
 import { ListNationAthletes } from './use-cases/list-nation-athletes';
 
 function sportEvent(sport: SportSlug, name: string, startsAt: string): SportEvent {
@@ -14,6 +16,7 @@ function sportEvent(sport: SportSlug, name: string, startsAt: string): SportEven
     name,
     startsAt: new Date(startsAt),
     status: 'scheduled',
+    awardsMedals: true,
     entries: [],
   });
 }
@@ -24,6 +27,7 @@ function eventWithStatus(
   status: SportEventStatus,
   participants: [nationCode: string, competitor: string][] = [],
   startsAt = '2026-11-08T10:00:00.000Z',
+  awardsMedals = true,
 ): SportEvent {
   return SportEvent.restore({
     id: randomUUID(),
@@ -31,6 +35,7 @@ function eventWithStatus(
     name,
     startsAt: new Date(startsAt),
     status,
+    awardsMedals,
     entries: participants.map(([nationCode, competitor]) => ({
       rank: null,
       nationCode,
@@ -140,5 +145,35 @@ describe('results (application layer)', () => {
       ['Moussa Fall', '100 m hommes, finale', 'finished'],
       ['Équipe du Sénégal', 'Hommes, demi-finale', 'scheduled'],
     ]);
+  });
+
+  it('004-AS3: gives the three latest finished events, from the latest to the oldest', async () => {
+    const finished = (name: string, startsAt: string, awardsMedals = true) =>
+      eventWithStatus('athletisme', name, 'finished', [], startsAt, awardsMedals);
+    const repository = new InMemorySportEventRepository([
+      finished('Ancienne', '2026-11-07T10:00:00.000Z'),
+      finished('Troisième', '2026-11-08T09:00:00.000Z'),
+      finished('Première', '2026-11-08T18:00:00.000Z'),
+      finished('Deuxième', '2026-11-08T16:00:00.000Z'),
+      finished('Manche récente', '2026-11-08T19:00:00.000Z', false),
+      eventWithStatus('futsal', 'En cours', 'in-progress', [], '2026-11-08T20:00:00.000Z'),
+    ]);
+
+    const events = await new ListLatestResults(repository).execute();
+
+    expect(events.map((event) => event.name)).toEqual(['Première', 'Deuxième', 'Troisième']);
+  });
+
+  it('004-AS6: the live page keeps only the events in progress, by time', async () => {
+    const repository = new InMemorySportEventRepository([
+      eventWithStatus('futsal', 'Plus tard', 'in-progress', [], '2026-11-08T20:00:00.000Z'),
+      eventWithStatus('athletisme', 'Plus tôt', 'in-progress', [], '2026-11-08T09:00:00.000Z'),
+      eventWithStatus('judo', 'Programmée', 'scheduled'),
+      eventWithStatus('voile', 'Terminée', 'finished'),
+    ]);
+
+    const events = await new ListLiveEvents(repository).execute();
+
+    expect(events.map((event) => event.name)).toEqual(['Plus tôt', 'Plus tard']);
   });
 });

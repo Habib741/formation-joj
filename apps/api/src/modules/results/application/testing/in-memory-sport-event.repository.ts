@@ -16,4 +16,19 @@ export class InMemorySportEventRepository extends SportEventRepository {
         (a, b) => a.sport.localeCompare(b.sport) || a.startsAt.getTime() - b.startsAt.getTime(),
       );
   }
+
+  async listLatestFinished(limit: number): Promise<SportEvent[]> {
+    return this.events
+      .filter((event) => event.status === 'finished' && event.awardsMedals)
+      .toSorted((a, b) => b.startsAt.getTime() - a.startsAt.getTime())
+      .slice(0, limit);
+  }
+
+  async listInProgress(): Promise<SportEvent[]> {
+    return this.events
+      .filter((event) => event.status === 'in-progress')
+      .toSorted(
+        (a, b) => a.startsAt.getTime() - b.startsAt.getTime() || a.sport.localeCompare(b.sport),
+      );
+  }
 }

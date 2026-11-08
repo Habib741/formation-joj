@@ -49,4 +49,12 @@ export class DrizzleSportEventRepository extends SportEventRepository {
       ),
     );
   }
+
+  listLatestFinished(_limit: number): Promise<SportEvent[]> {
+    throw new Error('non implémenté');
+  }
+
+  listInProgress(): Promise<SportEvent[]> {
+    throw new Error('non implémenté');
+  }
 }

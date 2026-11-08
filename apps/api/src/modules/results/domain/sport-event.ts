@@ -26,6 +26,7 @@ export interface SportEventProps {
   name: string;
   startsAt: Date;
   status: SportEventStatus;
+  awardsMedals: boolean;
   entries: RankingEntry[];
 }
 
@@ -56,6 +57,10 @@ export class SportEvent {
 
   get status(): SportEventStatus {
     return this.props.status;
+  }
+
+  get awardsMedals(): boolean {
+    return this.props.awardsMedals;
   }
 
   /** Les classés par rang, puis les participants avec une mention. Vide avant la fin de l'épreuve. */

@@ -20,6 +20,7 @@ function sportEvent(status: SportEventStatus, entries: RankingEntry[]): SportEve
     name: '100 m hommes, finale',
     startsAt: new Date('2026-11-08T18:32:00.000Z'),
     status,
+    awardsMedals: true,
     entries,
   });
 }
