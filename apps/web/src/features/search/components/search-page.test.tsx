@@ -68,4 +68,18 @@ describe('SearchPage', () => {
     const [hit] = await hits();
     expect(hit).toHaveAttribute('href', '/medailles?sport=boxe');
   });
+
+  it('005-AS3: keeps a numeric text typed in the address as text', async () => {
+    fixture.searchHits.push({
+      kind: 'event',
+      label: 'Épreuve 100',
+      date: '2026-11-08',
+      sport: 'boxe',
+      nation: null,
+    });
+    await renderRoute({ initialEntries: ['/recherche?q=100'] });
+
+    const labels = (await hits()).map((hit) => hit.textContent);
+    expect(labels).toContain('ÉpreuveÉpreuve 100');
+  });
 });
