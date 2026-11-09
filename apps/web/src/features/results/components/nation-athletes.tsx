@@ -37,9 +37,11 @@ export function NationAthletes({ day, nation }: { day: string; nation: string })
               <span>
                 {SPORT_LABELS[athlete.sport]}, {athlete.eventName}
               </span>
-              <span className="text-muted-foreground">
-                {formatEventTime(athlete.startsAt, DAKAR_TIME_ZONE)}
-              </span>
+              {athlete.hasStartTime && (
+                <span className="text-muted-foreground">
+                  {formatEventTime(athlete.startsAt, DAKAR_TIME_ZONE)}
+                </span>
+              )}
               <span className="text-muted-foreground">{STATUS_LABELS[athlete.status]}</span>
             </li>
           ))}

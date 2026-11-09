@@ -18,7 +18,7 @@ Le visiteur veut savoir quand se déroulent les prochaines épreuves, depuis Dak
 
 - **Étant donné** le 8 novembre 2026 compte « Hommes, demi-finale » (futsal) au statut « Programmé » et « 100 m hommes, finale » au statut « Terminé »
 - **Quand** le visiteur ouvre le calendrier et choisit le 8 novembre
-- **Alors** il voit un groupe « Futsal » avec le nom, l'heure et le statut « Programmé » de l'épreuve, il ne voit pas « 100 m hommes, finale » ni aucune épreuve d'un autre jour, et il voit la mention « Données de démonstration »
+- **Alors** il voit un groupe « Futsal » avec le nom, l'heure et le statut « Programmé » de l'épreuve, il ne voit pas « 100 m hommes, finale » ni aucune épreuve d'un autre jour, et il voit la mention « Source : Wikipédia (CC BY-SA), données du » suivie de la date
 
 ### AS2 — Filtrer le calendrier par sport
 

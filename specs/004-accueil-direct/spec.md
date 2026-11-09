@@ -19,7 +19,7 @@ Le visiteur arrive sans savoir où chercher et veut voir d'un coup d'œil l'esse
 
 - **Étant donné** les Jeux comptent 25 disciplines
 - **Quand** le visiteur ouvre l'accueil
-- **Alors** il voit « 25 Disciplines », « 206 Nations » et « Plus de 4 000 Jeunes athlètes », les 25 disciplines nommées, et la mention « Données de démonstration »
+- **Alors** il voit « 25 Disciplines », « 205 Nations » et « Plus de 4 000 Jeunes athlètes », les 25 disciplines nommées, et la mention « Source : Wikipédia (CC BY-SA), données du » suivie de la date
 
 ### AS2 — Voir le début du classement des nations
 

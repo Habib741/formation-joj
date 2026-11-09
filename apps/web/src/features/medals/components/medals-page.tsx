@@ -16,6 +16,7 @@ import { SPORT_LABELS } from '@/features/results/components/result-labels';
 import { cn } from '@/lib/utils';
 import { useMedals, useNationStandings } from '../api/medals.queries';
 import { CONTINENT_LABELS, MEDAL_TYPE_LABELS } from './medal-labels';
+import { MedalGaps } from './medal-gaps';
 import { MedalList } from './medal-list';
 import { NationStandingsTable } from './nation-standings-table';
 
@@ -45,6 +46,7 @@ function StandingsSection() {
         </p>
       )}
       {standings.isSuccess && <NationStandingsTable standings={standings.data} />}
+      <MedalGaps />
     </section>
   );
 }

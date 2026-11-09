@@ -1,9 +1,9 @@
 import { useId } from 'react';
 
-/** Les chiffres de la maquette, fixes : le jeu de démonstration contient moins de nations. */
+/** Les chiffres de la source : 25 sports, 205 délégations dont les réfugiés, plus de 4 000 jeunes. */
 const KEY_FIGURES = [
   { value: '25', label: 'Disciplines' },
-  { value: '206', label: 'Nations' },
+  { value: '205', label: 'Nations' },
   { value: 'Plus de 4 000', label: 'Jeunes athlètes' },
 ];
 

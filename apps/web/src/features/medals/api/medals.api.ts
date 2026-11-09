@@ -1,4 +1,6 @@
 import {
+  type MedalGapResponse,
+  medalGapListSchema,
   type MedalResponse,
   medalListSchema,
   type MedalsQuery,
@@ -13,6 +15,8 @@ import { api } from '@/lib/api';
  * réponse validée par le schéma partagé. Le cache et les hooks sont dans `medals.queries.ts`.
  */
 export const medalsApi = {
+  listGaps: (signal?: AbortSignal) =>
+    api.request<MedalGapResponse[]>('/medals/gaps', { schema: medalGapListSchema, signal }),
   listStandings: ({ continent }: NationStandingsQuery, signal?: AbortSignal) => {
     const params = new URLSearchParams();
     if (continent !== undefined) params.set('continent', continent);

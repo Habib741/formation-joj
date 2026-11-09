@@ -87,6 +87,24 @@ export const handlers: RequestHandler[] = [
     );
   }),
 
+  http.get('*/api/results/source', async () => {
+    const failure = await gate('GET', '/api/results/source');
+    if (failure) return failure;
+    return HttpResponse.json(fixture.dataSource);
+  }),
+
+  http.get('*/api/results/undated', async () => {
+    const failure = await gate('GET', '/api/results/undated');
+    if (failure) return failure;
+    return HttpResponse.json(fixture.undatedEvents);
+  }),
+
+  http.get('*/api/medals/gaps', async () => {
+    const failure = await gate('GET', '/api/medals/gaps');
+    if (failure) return failure;
+    return HttpResponse.json(fixture.medalGaps);
+  }),
+
   http.get('*/api/results/latest', async () => {
     const failure = await gate('GET', '/api/results/latest');
     if (failure) return failure;

@@ -5,6 +5,7 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
+import { fixture } from '@/mocks/fixture';
 import { renderRoute } from '@/test/utils';
 
 async function open(search = '') {
@@ -32,7 +33,7 @@ async function rowOf(nationName: string) {
 }
 
 describe('MedalsPage', () => {
-  it('002-AS1: shows the nations in order, with their medals, total and the demonstration notice', async () => {
+  it('002-AS1: shows the nations in order, with their medals, total and the source', async () => {
     await open();
 
     expect((await standingRows()).slice(0, 3)).toEqual([
@@ -40,7 +41,7 @@ describe('MedalsPage', () => {
       ['2', 'Kenya', '3', '2', '0', '5'],
       ['3', 'Sénégal (pays hôte)', '3', '1', '2', '6'],
     ]);
-    expect(screen.getByText('Données de démonstration')).toBeInTheDocument();
+    expect(await screen.findByRole('link', { name: 'Wikipédia' })).toBeInTheDocument();
   });
 
   it('002-AS1: is reachable from the main menu', async () => {
@@ -90,7 +91,7 @@ describe('MedalsPage', () => {
       within(sprint)
         .getAllByRole('listitem')
         .map((item) => item.textContent),
-    ).toEqual(['OrGift BrightKenya', 'ArgentHangyu ZhangChine', 'BronzeSzymon DolegaPologne']);
+    ).toEqual(['OrGift BrightNigeria', 'ArgentHangyu ZhangChine', 'BronzeSzymon DolegaPologne']);
   });
 
   it('002-AS6: shows a medalist team as one medal, counted once in the standings', async () => {
@@ -128,5 +129,50 @@ describe('MedalsPage', () => {
     await open('?type=gold');
 
     expect((await standingRows())[1]).toEqual(['2', 'Kenya', '3', '2', '0', '5']);
+  });
+
+  it('005-AS5: reports a gap with the table of the source', async () => {
+    fixture.medalGaps = [
+      {
+        nationCode: 'pt',
+        nationName: 'Portugal',
+        gold: 1,
+        silver: 1,
+        bronze: 1,
+        announcedGold: 2,
+        announcedSilver: 1,
+        announcedBronze: 1,
+      },
+    ];
+    await open();
+
+    expect(
+      await screen.findByText('Écart avec la source : Portugal, 2-1-1 annoncé'),
+    ).toBeInTheDocument();
+  });
+
+  it('005-AS5: reports nothing when the podiums match the table of the source', async () => {
+    await open();
+    await standingsTable();
+
+    expect(screen.queryByText(/Écart avec la source/)).not.toBeInTheDocument();
+  });
+
+  it('005-AS6: shows a mixed team on its medal, and on no nation of the standings', async () => {
+    fixture.medals.push({
+      id: '0199f5c2-0000-7000-8000-000000000032',
+      type: 'gold',
+      sport: 'sports-equestres',
+      eventId: '0199f5c2-0000-7000-8000-000000000033',
+      eventName: "Saut d'obstacles par équipes",
+      competitor: 'Équipe Asie',
+      nationCode: 'xx',
+      nationName: 'Équipe mixte',
+    });
+    await open();
+
+    const equestrian = await screen.findByRole('region', { name: 'Sports équestres' });
+    expect(within(equestrian).getByRole('listitem')).toHaveTextContent('OrÉquipe AsieÉquipe mixte');
+    expect(within(await standingsTable()).queryByText('Équipe mixte')).not.toBeInTheDocument();
   });
 });

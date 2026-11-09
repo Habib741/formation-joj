@@ -1,4 +1,8 @@
 import {
+  type DataSourceResponse,
+  dataSourceSchema,
+  type UndatedEventResponse,
+  undatedEventListSchema,
   type DayResultsQuery,
   type NationAthleteResponse,
   nationAthleteListSchema,
@@ -22,6 +26,13 @@ export const resultsApi = {
       signal,
     });
   },
+  findSource: (signal?: AbortSignal) =>
+    api.request<DataSourceResponse>('/results/source', { schema: dataSourceSchema, signal }),
+  listUndated: (signal?: AbortSignal) =>
+    api.request<UndatedEventResponse[]>('/results/undated', {
+      schema: undatedEventListSchema,
+      signal,
+    }),
   listLatest: (signal?: AbortSignal) =>
     api.request<SportEventResponse[]>('/results/latest', {
       schema: sportEventListSchema,

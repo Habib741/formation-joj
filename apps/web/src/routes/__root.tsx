@@ -1,5 +1,6 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
 import { buttonVariants } from '@/components/ui/button';
+import { DataSourceNotice } from '@/features/results/components/data-source-notice';
 import { SearchForm } from '@/features/search/components/search-form';
 import { ThemeSwitch } from '@/features/theme/components/theme-switch';
 
@@ -53,9 +54,7 @@ function SiteHeader() {
         <span className="flex-1 bg-joj-yellow" />
         <span className="flex-1 bg-joj-red" />
       </div>
-      <p className="bg-joj-pale-yellow px-4 py-1 text-center text-xs font-medium text-foreground">
-        Données de démonstration
-      </p>
+      <DataSourceNotice />
     </header>
   );
 }

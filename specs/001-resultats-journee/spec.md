@@ -30,7 +30,7 @@ Pendant les JOJ Dakar 2026, 25 sports se déroulent en parallèle et le spectate
 
 - **Étant donné** l'épreuve « 100 m hommes, finale » est terminée
 - **Quand** le spectateur consulte cette épreuve
-- **Alors** il voit le statut « Terminé » et les participants du premier au dernier, chacun avec son rang, sa nation, son nom d'athlète ou d'équipe et sa performance (par exemple « 1, Kenya, Gift Bright, 10,28 s »)
+- **Alors** il voit le statut « Terminé » et les participants du premier au dernier, chacun avec son rang, sa nation, son nom d'athlète ou d'équipe et sa performance (par exemple « 1, Nigeria, Gift Bright, 10,28 s »)
 
 ### AS4 — Une épreuve non terminée n'a pas de classement
 
@@ -50,11 +50,11 @@ Pendant les JOJ Dakar 2026, 25 sports se déroulent en parallèle et le spectate
 - **Quand** le spectateur choisit ce jour et ce sport
 - **Alors** il voit le message « Aucune épreuve pour ce jour et ce sport », et non une page vide
 
-### AS7 — Les données de démonstration sont signalées
+### AS7 — La source des données est signalée
 
-- **Étant donné** les résultats affichés sont un jeu de démonstration
+- **Étant donné** les résultats affichés viennent de Wikipédia (spec 005)
 - **Quand** le spectateur ouvre la page des résultats
-- **Alors** il voit la mention « Données de démonstration »
+- **Alors** il voit la mention « Source : Wikipédia (CC BY-SA), données du » suivie de la date
 
 ## Hors périmètre
 

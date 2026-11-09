@@ -38,6 +38,21 @@ export function SearchPage() {
   );
 }
 
+/** Sans date, une épreuve n'a pas de place dans la vue par jour : ses médailles sont sa page. */
+function hitTarget(hit: SearchHitResponse) {
+  if (hit.date === null && (hit.kind === 'event' || hit.kind === 'athlete')) {
+    return { to: '/medailles', search: { sport: hit.sport ?? undefined } } as const;
+  }
+  return {
+    to: '/resultats',
+    search: {
+      date: hit.date ?? undefined,
+      sport: hit.sport ?? undefined,
+      nation: hit.nation ?? undefined,
+    },
+  } as const;
+}
+
 function SearchHits({ hits }: { hits: SearchHitResponse[] }) {
   if (hits.length === 0) {
     return (
@@ -51,12 +66,7 @@ function SearchHits({ hits }: { hits: SearchHitResponse[] }) {
       {hits.map((hit) => (
         <li key={`${hit.kind}-${hit.label}-${hit.date ?? ''}-${hit.nation ?? ''}`}>
           <Link
-            to="/resultats"
-            search={{
-              date: hit.date ?? undefined,
-              sport: hit.sport ?? undefined,
-              nation: hit.nation ?? undefined,
-            }}
+            {...hitTarget(hit)}
             className="flex items-baseline gap-3 rounded-2xl border bg-card px-4 py-3 shadow-sm hover:bg-accent"
           >
             <span className="w-16 text-xs font-medium text-muted-foreground">

@@ -7,6 +7,7 @@ import { DaySelector } from '@/features/results/components/day-selector';
 import { defaultDay } from '@/features/results/components/default-day';
 import { SPORT_LABELS } from '@/features/results/components/result-labels';
 import { SportGroups } from '@/features/results/components/sport-groups';
+import { UndatedEvents } from '@/features/results/components/undated-events';
 import { useDayCalendar } from '../api/calendar.queries';
 import { localTimeZone } from './event-time';
 import { TimeZoneSwitch } from './time-zone-switch';
@@ -44,6 +45,7 @@ export function CalendarPage() {
           timeZone={zone === 'local' ? localTimeZone() : DAKAR_TIME_ZONE}
         />
       )}
+      <UndatedEvents />
     </div>
   );
 }

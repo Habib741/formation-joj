@@ -3,11 +3,14 @@
  * passent contre une API qui n'existe pas. Ces tests l'appellent avec `fetch`, sans React.
  */
 import {
+  dataSourceSchema,
+  medalGapListSchema,
   medalListSchema,
   nationAthleteListSchema,
   nationStandingListSchema,
   searchHitListSchema,
   sportEventListSchema,
+  undatedEventListSchema,
 } from '@joj/shared';
 import { describe, expect, it } from 'vitest';
 
@@ -217,5 +220,28 @@ describe('mock home, live and search API', () => {
 
     expect(status).toBe(400);
     expect(body).toMatchObject({ status: 400, code: 'VALIDATION_FAILED' });
+  });
+});
+
+describe('mock source, gaps and undated events API', () => {
+  it('005-AS2: returns the source of the data', async () => {
+    const { status, body } = await resultsPath('/source');
+
+    expect(status).toBe(200);
+    expect(dataSourceSchema.parse(body)).toMatchObject({ name: 'Wikipédia', license: 'CC BY-SA' });
+  });
+
+  it('005-AS5: returns the gaps with the table of the source', async () => {
+    const { status, body } = await medalsApi('/gaps');
+
+    expect(status).toBe(200);
+    expect(medalGapListSchema.parse(body)).toEqual([]);
+  });
+
+  it('005-AS3: returns the events without a published date', async () => {
+    const { status, body } = await resultsPath('/undated');
+
+    expect(status).toBe(200);
+    expect(undatedEventListSchema.parse(body)).toEqual([]);
   });
 });

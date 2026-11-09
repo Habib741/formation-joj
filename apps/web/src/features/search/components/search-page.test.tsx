@@ -4,6 +4,7 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
+import { fixture } from '@/mocks/fixture';
 import { renderRoute } from '@/test/utils';
 
 const hits = async () => {
@@ -26,7 +27,7 @@ describe('SearchPage', () => {
   it.each([
     ['natation', 'Natation', '/resultats?sport=natation'],
     ['100 m', '100 m hommes, finale', '/resultats?date=2026-11-08&sport=athletisme'],
-    ['bright', 'Gift Bright', '/resultats?date=2026-11-08&sport=athletisme&nation=ke'],
+    ['bright', 'Gift Bright', '/resultats?date=2026-11-08&sport=athletisme&nation=ng'],
   ])('004-AS4: finds « %s », with a link to its page', async (term, label, href) => {
     await renderRoute({ initialEntries: [`/recherche?q=${encodeURIComponent(term)}`] });
 
@@ -52,5 +53,19 @@ describe('SearchPage', () => {
     await renderRoute({ initialEntries: ['/recherche?q=a'] });
 
     expect(await screen.findByText('Saisissez au moins 2 caractères')).toBeInTheDocument();
+  });
+
+  it('005-AS3: leads an event without a date to the medals of its sport', async () => {
+    fixture.searchHits.push({
+      kind: 'event',
+      label: '-51 kg hommes',
+      date: null,
+      sport: 'boxe',
+      nation: null,
+    });
+    await renderRoute({ initialEntries: ['/recherche?q=-51'] });
+
+    const [hit] = await hits();
+    expect(hit).toHaveAttribute('href', '/medailles?sport=boxe');
   });
 });

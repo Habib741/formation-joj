@@ -5,6 +5,7 @@ import { medalsApi } from './medals.api';
 /** Clés du cache TanStack Query pour cette fonctionnalité. */
 export const medalKeys = {
   all: ['medals'] as const,
+  gaps: () => [...medalKeys.all, 'gaps'] as const,
   standings: (query: NationStandingsQuery) => [...medalKeys.all, 'standings', query] as const,
   list: (query: MedalsQuery) => [...medalKeys.all, 'list', query] as const,
 };
@@ -20,6 +21,14 @@ export const medalsQueryOptions = (query: MedalsQuery) =>
     queryKey: medalKeys.list(query),
     queryFn: ({ signal }) => medalsApi.listMedals(query, signal),
   });
+
+export const useMedalGaps = () =>
+  useQuery(
+    queryOptions({
+      queryKey: medalKeys.gaps(),
+      queryFn: ({ signal }) => medalsApi.listGaps(signal),
+    }),
+  );
 
 export const useNationStandings = (query: NationStandingsQuery) =>
   useQuery(nationStandingsQueryOptions(query));

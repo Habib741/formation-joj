@@ -5,6 +5,7 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
+import { fixture } from '@/mocks/fixture';
 import { renderRoute } from '@/test/utils';
 import { defaultDay } from './default-day';
 
@@ -76,7 +77,7 @@ describe('ResultsPage', () => {
 
     const rows = await rankingRows('100 m hommes, finale');
 
-    expect(rows[0]).toEqual(['1', 'Kenya', 'Gift Bright', '10,28 s']);
+    expect(rows[0]).toEqual(['1', 'Nigeria', 'Gift Bright', '10,28 s']);
     expect(rows[1]).toEqual(['2', 'Chine', 'Hangyu Zhang', '10,31 s']);
     expect(await eventCard('100 m hommes, finale')).toHaveTextContent('Terminé');
   });
@@ -108,10 +109,10 @@ describe('ResultsPage', () => {
     expect(await screen.findByText('Aucune épreuve pour ce jour et ce sport')).toBeInTheDocument();
   });
 
-  it('001-AS7: flags the demonstration data', async () => {
+  it('001-AS7: shows the source of the data', async () => {
     await open();
 
-    expect(await screen.findByText('Données de démonstration')).toBeInTheDocument();
+    expect(await screen.findByRole('link', { name: 'Wikipédia' })).toBeInTheDocument();
   });
 
   it('003-AS5: choosing a nation keeps its events, with their complete ranking', async () => {
@@ -127,7 +128,7 @@ describe('ResultsPage', () => {
       ).not.toBeInTheDocument(),
     );
     const rows = await rankingRows('100 m hommes, finale');
-    expect(rows.map((row) => row[1])).toEqual(['Kenya', 'Sénégal']);
+    expect(rows.map((row) => row[1])).toEqual(['Nigeria', 'Sénégal']);
   });
 
   it('003-AS5: keeps the chosen nation when the day changes', async () => {
@@ -170,5 +171,47 @@ describe('ResultsPage', () => {
     await open('date=2026-11-10&nation=tv');
 
     expect(await screen.findByText('Aucun athlète de cette nation ce jour')).toBeInTheDocument();
+  });
+
+  it('005-AS1: shows a real podium, and no time when the source does not give it', async () => {
+    fixture.sportEvents = fixture.sportEvents.map((event) =>
+      event.name === '100 m hommes, finale' && event.startsAt.startsWith('2026-11-08')
+        ? { ...event, hasStartTime: false }
+        : event,
+    );
+    await open();
+
+    const rows = await rankingRows('100 m hommes, finale');
+
+    expect(rows[0]).toEqual(['1', 'Nigeria', 'Gift Bright', '10,28 s']);
+    expect(await eventCard('100 m hommes, finale')).not.toHaveTextContent('18h32');
+  });
+
+  it('005-AS3: an event without a published result invents none', async () => {
+    fixture.sportEvents.push(
+      {
+        id: '0199f5c2-0000-7000-8000-000000000030',
+        sport: 'boxe',
+        name: '57 kg femmes',
+        startsAt: '2026-11-07T00:00:00.000Z',
+        hasStartTime: false,
+        status: 'unpublished',
+        ranking: [],
+      },
+      {
+        id: '0199f5c2-0000-7000-8000-000000000031',
+        sport: 'boxe',
+        name: '60 kg femmes',
+        startsAt: '2026-11-12T00:00:00.000Z',
+        hasStartTime: false,
+        status: 'scheduled',
+        ranking: [],
+      },
+    );
+    await open('date=2026-11-07');
+
+    const past = await eventCard('57 kg femmes');
+    expect(past).toHaveTextContent('Résultat non publié');
+    expect(within(past).queryByRole('table')).not.toBeInTheDocument();
   });
 });

@@ -11,12 +11,12 @@ import { renderRoute } from '@/test/utils';
 const openHome = () => renderRoute({ initialEntries: ['/'] });
 
 describe('HomePage', () => {
-  it('004-AS1: shows the key figures, all the disciplines and the demonstration notice', async () => {
+  it('004-AS1: shows the key figures, all the disciplines and the source', async () => {
     await openHome();
 
     const figures = await screen.findByRole('region', { name: 'Chiffres clés' });
     expect(figures).toHaveTextContent('25 Disciplines');
-    expect(figures).toHaveTextContent('206 Nations');
+    expect(figures).toHaveTextContent('205 Nations');
     expect(figures).toHaveTextContent('Plus de 4 000 Jeunes athlètes');
 
     const disciplines = screen.getByRole('region', { name: 'Toutes les disciplines' });
@@ -25,7 +25,7 @@ describe('HomePage', () => {
         .getAllByRole('listitem')
         .map((item) => item.textContent),
     ).toEqual(SPORT_SLUGS.map((slug) => SPORT_LABELS[slug]));
-    expect(screen.getByText('Données de démonstration')).toBeInTheDocument();
+    expect(await screen.findByRole('link', { name: 'Wikipédia' })).toBeInTheDocument();
   });
 
   it('004-AS1: leads to the live page', async () => {
@@ -88,7 +88,7 @@ describe('HomePage', () => {
     expect(events[0]).toHaveTextContent('Cycliste Norvège');
     expect(events[0]).toHaveTextContent('Norvège');
     expect(events[2]).toHaveTextContent('Gift Bright');
-    expect(events[2]).toHaveTextContent('Kenya');
+    expect(events[2]).toHaveTextContent('Nigeria');
     expect(events[2]).not.toHaveTextContent('Athlète Disqualifié');
     expect(within(latest).queryByText('Saut en longueur femmes, finale')).not.toBeInTheDocument();
     expect(within(latest).getByRole('link', { name: 'Voir tous les résultats' })).toHaveAttribute(

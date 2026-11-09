@@ -1,9 +1,12 @@
 import type {
   Continent,
+  DataSourceResponse,
+  MedalGapResponse,
   MedalResponse,
   NationStandingResponse,
   SearchHitResponse,
   SportEventResponse,
+  UndatedEventResponse,
 } from '@joj/shared';
 
 /**
@@ -22,8 +25,8 @@ export const sprintFinal: SportEventResponse = {
   ranking: [
     {
       rank: 1,
-      nationCode: 'ke',
-      nationName: 'Kenya',
+      nationCode: 'ng',
+      nationName: 'Nigeria',
       competitor: 'Gift Bright',
       performance: '10,28 s',
       mention: null,
@@ -127,8 +130,8 @@ const followingDays: SportEventResponse[] = [
     ranking: [
       {
         rank: 1,
-        nationCode: 'ke',
-        nationName: 'Kenya',
+        nationCode: 'ng',
+        nationName: 'Nigeria',
         competitor: 'Gift Bright',
         performance: '10,28 s',
         mention: null,
@@ -174,7 +177,7 @@ const followingDays: SportEventResponse[] = [
 
 /** Les participants du 10 novembre, y compris ceux d'une épreuve qui n'a pas encore de classement. */
 const participants: FixtureParticipant[] = [
-  { eventId: NATION_SPRINT_ID, nationCode: 'ke', competitor: 'Gift Bright' },
+  { eventId: NATION_SPRINT_ID, nationCode: 'ng', competitor: 'Gift Bright' },
   { eventId: NATION_SPRINT_ID, nationCode: 'sn', competitor: 'Awa Diop' },
   { eventId: NATION_ROAD_ID, nationCode: 'no', competitor: 'Cycliste Norvège' },
   { eventId: NATION_FUTSAL_ID, nationCode: 'sn', competitor: 'Équipe du Sénégal' },
@@ -202,7 +205,7 @@ const searchHits: SearchHitResponse[] = [
     sport: 'athletisme',
     nation: null,
   },
-  { kind: 'athlete', label: 'Gift Bright', date: '2026-11-08', sport: 'athletisme', nation: 'ke' },
+  { kind: 'athlete', label: 'Gift Bright', date: '2026-11-08', sport: 'athletisme', nation: 'ng' },
 ];
 
 /** Le classement est déjà calculé : c'est l'API qui en porte les règles, testées de son côté. */
@@ -246,8 +249,8 @@ const medals: MedalResponse[] = [
     eventId: SPRINT_EVENT_ID,
     eventName: '100 m hommes',
     competitor: 'Gift Bright',
-    nationCode: 'ke',
-    nationName: 'Kenya',
+    nationCode: 'ng',
+    nationName: 'Nigeria',
   },
   {
     id: '0199f5c2-0000-7000-8000-000000000022',
@@ -287,6 +290,9 @@ const initial = (): {
   medals: MedalResponse[];
   participants: FixtureParticipant[];
   searchHits: SearchHitResponse[];
+  dataSource: DataSourceResponse;
+  medalGaps: MedalGapResponse[];
+  undatedEvents: UndatedEventResponse[];
 } => ({
   sportEvents: [
     { ...futsalSemiFinal },
@@ -297,6 +303,14 @@ const initial = (): {
     { ...olderFinal },
   ],
   searchHits: searchHits.map((hit) => ({ ...hit })),
+  dataSource: {
+    name: 'Wikipédia',
+    license: 'CC BY-SA',
+    url: 'https://en.wikipedia.org/wiki/2026_Summer_Youth_Olympics',
+    extractedOn: '2026-11-08',
+  },
+  medalGaps: [],
+  undatedEvents: [],
   participants: participants.map((participant) => ({ ...participant })),
   nationStandings: nationStandings.map((line) => ({ ...line })),
   medals: medals.map((medal) => ({ ...medal })),

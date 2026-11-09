@@ -34,7 +34,11 @@ export function SportEventCard({ event, timeZone }: SportEventCardProps) {
         <h3 id={titleId} className="font-semibold">
           {event.name}
         </h3>
-        <p className="text-sm text-muted-foreground">{formatEventTime(event.startsAt, timeZone)}</p>
+        {event.hasStartTime && (
+          <p className="text-sm text-muted-foreground">
+            {formatEventTime(event.startsAt, timeZone)}
+          </p>
+        )}
         <p
           className={cn(
             'rounded-full px-2.5 py-0.5 text-xs font-medium',

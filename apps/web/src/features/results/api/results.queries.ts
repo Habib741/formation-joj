@@ -7,6 +7,8 @@ export const resultKeys = {
   all: ['results'] as const,
   day: (query: DayResultsQuery) => [...resultKeys.all, 'day', query] as const,
   latest: () => [...resultKeys.all, 'latest'] as const,
+  source: () => [...resultKeys.all, 'source'] as const,
+  undated: () => [...resultKeys.all, 'undated'] as const,
   athletes: (query: NationAthletesQuery) => [...resultKeys.all, 'athletes', query] as const,
 };
 
@@ -27,6 +29,22 @@ export const latestResultsQueryOptions = () =>
     queryKey: resultKeys.latest(),
     queryFn: ({ signal }) => resultsApi.listLatest(signal),
   });
+
+export const useDataSource = () =>
+  useQuery(
+    queryOptions({
+      queryKey: resultKeys.source(),
+      queryFn: ({ signal }) => resultsApi.findSource(signal),
+    }),
+  );
+
+export const useUndatedEvents = () =>
+  useQuery(
+    queryOptions({
+      queryKey: resultKeys.undated(),
+      queryFn: ({ signal }) => resultsApi.listUndated(signal),
+    }),
+  );
 
 export const useLatestResults = () => useQuery(latestResultsQueryOptions());
 

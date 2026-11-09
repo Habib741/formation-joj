@@ -6,6 +6,7 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
+import { fixture } from '@/mocks/fixture';
 import { renderRoute } from '@/test/utils';
 
 vi.mock('./event-time', async (importOriginal) => ({
@@ -31,7 +32,7 @@ describe('CalendarPage', () => {
     expect(
       screen.queryByRole('article', { name: '+73 kg femmes, finale' }),
     ).not.toBeInTheDocument();
-    expect(screen.getByText('Données de démonstration')).toBeInTheDocument();
+    expect(await screen.findByRole('link', { name: 'Wikipédia' })).toBeInTheDocument();
   });
 
   it('003-AS1: is reachable from the main menu', async () => {
@@ -79,5 +80,21 @@ describe('CalendarPage', () => {
     expect(
       await screen.findByText('Aucune épreuve à venir pour ce jour et ce sport'),
     ).toBeInTheDocument();
+  });
+
+  it('005-AS3: lists the events without a published date', async () => {
+    fixture.undatedEvents.push({
+      id: '0199f5c2-0000-7000-8000-000000000034',
+      sport: 'boxe',
+      name: '-51 kg hommes',
+      status: 'unpublished',
+      ranking: [],
+    });
+    await open('date=2026-11-08');
+
+    const undated = await screen.findByRole('region', { name: 'Date non publiée' });
+    expect(await within(undated).findByRole('listitem')).toHaveTextContent(
+      'Boxe, -51 kg hommes, Résultat non publié',
+    );
   });
 });

@@ -1,5 +1,11 @@
 import 'flag-icons/css/flag-icons.min.css';
-import { type MedalResponse, type MedalType, SPORT_SLUGS, type SportSlug } from '@joj/shared';
+import {
+  MIXED_TEAM_CODE,
+  type MedalResponse,
+  type MedalType,
+  SPORT_SLUGS,
+  type SportSlug,
+} from '@joj/shared';
 import { useId } from 'react';
 import { cn } from '@/lib/utils';
 import { SPORT_LABELS } from '@/features/results/components/result-labels';
@@ -80,7 +86,9 @@ function MedalRow({ medal }: { medal: MedalResponse }) {
       </span>
       <span className="font-semibold">{medal.competitor}</span>
       <span>
-        <span aria-hidden="true" className={`fi fi-${medal.nationCode} mr-1.5 rounded-xs`} />
+        {medal.nationCode !== MIXED_TEAM_CODE && (
+          <span aria-hidden="true" className={`fi fi-${medal.nationCode} mr-1.5 rounded-xs`} />
+        )}
         {medal.nationName}
       </span>
     </li>

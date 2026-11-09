@@ -18,7 +18,7 @@ Le public et les journalistes veulent voir où en sont les nations et qui a remp
 
 - **Étant donné** Chine 4-0-0, Kenya 3-2-0, Sénégal 3-1-2 et Maroc 3-1-1 (or-argent-bronze)
 - **Quand** le visiteur ouvre le classement des nations
-- **Alors** il voit Chine 1re, Kenya 2e, Sénégal 3e et Maroc 4e, chacun avec son or, son argent, son bronze et son total (Chine 4, Kenya 5, Sénégal 6, Maroc 5), ainsi que la mention « Données de démonstration »
+- **Alors** il voit Chine 1re, Kenya 2e, Sénégal 3e et Maroc 4e, chacun avec son or, son argent, son bronze et son total (Chine 4, Kenya 5, Sénégal 6, Maroc 5), ainsi que la mention « Source : Wikipédia (CC BY-SA), données du » suivie de la date
 
 ### AS2 — Des nations à égalité parfaite partagent le même rang
 
