@@ -144,4 +144,18 @@ describe('buildNationStandings', () => {
       ['Pologne', 0, 0, 1],
     ]);
   });
+
+  it('005-AS6: gives no nation the medal of a mixed team', () => {
+    const standings = buildNationStandings(
+      [nation('sn', 'Sénégal'), nation('fr', 'France', 'europe')],
+      [medal('xx', 'gold', 'Équipe Asie'), medal('fr', 'silver', 'Cavalière')],
+    );
+
+    expect(
+      standings.map(({ nationCode, gold, silver, total }) => [nationCode, gold, silver, total]),
+    ).toEqual([
+      ['fr', 0, 1, 1],
+      ['sn', 0, 0, 0],
+    ]);
+  });
 });
