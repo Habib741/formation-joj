@@ -12,7 +12,8 @@ export interface SearchCatalog {
   events: {
     sport: SportSlug;
     name: string;
-    startsAt: Date;
+    /** Vide quand la source ne donne pas le jour. */
+    startsAt: Date | null;
     participants: { competitor: string; nationCode: string }[];
   }[];
 }
@@ -64,6 +65,6 @@ export function findSearchHits(term: string, catalog: SearchCatalog): SearchHitR
 }
 
 /** Dakar est à UTC toute l'année : le jour de Dakar est celui de la date UTC. */
-function dakarDay(date: Date): string {
-  return date.toISOString().slice(0, 10);
+function dakarDay(date: Date | null): string | null {
+  return date === null ? null : date.toISOString().slice(0, 10);
 }

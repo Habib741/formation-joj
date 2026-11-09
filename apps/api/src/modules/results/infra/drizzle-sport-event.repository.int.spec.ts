@@ -202,4 +202,39 @@ describe('DrizzleSportEventRepository (in-memory PGlite, migrations applied)', (
       ['Heure connue', true],
     ]);
   });
+
+  describe('events without a known day', () => {
+    const undatedId = randomUUID();
+
+    beforeAll(async () => {
+      await connection.db.insert(sportEvents).values({
+        id: undatedId,
+        sport: 'boxe',
+        name: '-51 kg hommes',
+        status: 'finished',
+        awardsMedals: true,
+      });
+      await connection.db.insert(sportEventEntries).values({
+        id: randomUUID(),
+        eventId: undatedId,
+        nationCode: 'kz',
+        nationName: 'Kazakhstan',
+        competitor: 'Boxeur',
+        rank: 1,
+      });
+    });
+
+    it('005-AS3: lists an event without a day, with its ranking', async () => {
+      const [event] = await repository.listUndated();
+
+      expect(event).toMatchObject({ id: undatedId, name: '-51 kg hommes', status: 'finished' });
+      expect(event?.ranking.map((entry) => entry.competitor)).toEqual(['Boxeur']);
+    });
+
+    it('005-AS3: keeps an event without a day out of the latest results', async () => {
+      const latest = await repository.listLatestFinished(50);
+
+      expect(latest.map((event) => event.id)).not.toContain(undatedId);
+    });
+  });
 });

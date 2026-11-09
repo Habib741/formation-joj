@@ -10,6 +10,7 @@ import { ListDayResults } from './use-cases/list-day-results';
 import { ListLatestResults } from './use-cases/list-latest-results';
 import { ListLiveEvents } from './use-cases/list-live-events';
 import { ListNationAthletes } from './use-cases/list-nation-athletes';
+import { ListUndatedEvents } from './use-cases/list-undated-events';
 
 function sportEvent(sport: SportSlug, name: string, startsAt: string): SportEvent {
   return SportEvent.restore({
@@ -203,5 +204,18 @@ describe('results (application layer)', () => {
     await expect(new GetDataSource(repository).execute()).rejects.toBeInstanceOf(
       DataSourceNotFoundError,
     );
+  });
+
+  it('005-AS3: lists the events whose day the source does not give', async () => {
+    const undated = {
+      id: randomUUID(),
+      sport: 'boxe' as const,
+      name: '-51 kg hommes',
+      status: 'unpublished' as const,
+      ranking: [],
+    };
+    const repository = new InMemorySportEventRepository([], null, [undated]);
+
+    expect(await new ListUndatedEvents(repository).execute()).toEqual([undated]);
   });
 });

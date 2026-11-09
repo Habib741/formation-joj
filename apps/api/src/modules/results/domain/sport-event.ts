@@ -21,6 +21,15 @@ export interface NationAthlete {
   status: SportEventStatus;
 }
 
+/** Une épreuve dont la source ne donne pas le jour : elle n'a donc ni date ni heure. */
+export interface UndatedEvent {
+  id: string;
+  sport: SportSlug;
+  name: string;
+  status: SportEventStatus;
+  ranking: RankingEntry[];
+}
+
 export interface SportEventProps {
   id: string;
   sport: SportSlug;

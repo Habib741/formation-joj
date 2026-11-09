@@ -1,6 +1,11 @@
 import { randomUUID } from 'node:crypto';
 import type { INestApplication } from '@nestjs/common';
-import { dataSourceSchema, nationAthleteListSchema, sportEventListSchema } from '@joj/shared';
+import {
+  dataSourceSchema,
+  nationAthleteListSchema,
+  sportEventListSchema,
+  undatedEventListSchema,
+} from '@joj/shared';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Database } from '../src/core/database/database';
@@ -250,5 +255,26 @@ describe('/api/results (e2e)', () => {
       url: 'https://en.wikipedia.org/wiki/2026_Summer_Youth_Olympics',
       extractedOn: '2026-11-08',
     });
+  });
+
+  it('005-AS3: returns the events whose day is unknown', async () => {
+    const db = app.get<Database>(DATABASE);
+    await db.insert(sportEvents).values({
+      id: randomUUID(),
+      sport: 'boxe',
+      name: '-51 kg hommes',
+      status: 'unpublished',
+    });
+
+    const response = await api().get('/api/results/undated').expect(200);
+
+    expect(undatedEventListSchema.parse(response.body)).toEqual([
+      expect.objectContaining({
+        sport: 'boxe',
+        name: '-51 kg hommes',
+        status: 'unpublished',
+        ranking: [],
+      }),
+    ]);
   });
 });

@@ -1,6 +1,6 @@
 import type { SportSlug } from '@joj/shared';
 import type { DataSource } from '../../domain/data-source';
-import type { SportEvent } from '../../domain/sport-event';
+import type { SportEvent, UndatedEvent } from '../../domain/sport-event';
 import { SportEventRepository } from '../sport-event.repository';
 
 /** Fake fidèle au contrat du port (filtres et tri), pour tester l'application sans base. */
@@ -8,6 +8,7 @@ export class InMemorySportEventRepository extends SportEventRepository {
   constructor(
     private readonly events: SportEvent[] = [],
     private readonly dataSource: DataSource | null = null,
+    private readonly undated: UndatedEvent[] = [],
   ) {
     super();
   }
@@ -34,6 +35,10 @@ export class InMemorySportEventRepository extends SportEventRepository {
       .toSorted(
         (a, b) => a.startsAt.getTime() - b.startsAt.getTime() || a.sport.localeCompare(b.sport),
       );
+  }
+
+  async listUndated(): Promise<UndatedEvent[]> {
+    return this.undated;
   }
 
   async findDataSource(): Promise<DataSource | null> {

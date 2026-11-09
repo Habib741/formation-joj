@@ -58,7 +58,7 @@ On stocke les vrais résultats dans les tables existantes, et trois ajouts rende
 - Table `nations` : les colonnes `announced_gold`, `announced_silver` et `announced_bronze` (entiers, 0 par défaut) gardent le tableau de la source, pour signaler les écarts sans changer le classement.
 - Table `data_extractions` : `extracted_on` (date, clé primaire), `source_name`, `source_url` et `license`. La plus récente est celle qui s'affiche.
 
-Le jour d'une épreuve vient de sa page Wikipédia. S'il est illisible, l'extraction échoue et nomme l'épreuve, plutôt que de le deviner. Le statut se décide à l'extraction : `finished` avec un podium, `unpublished` si le jour est antérieur à celui de l'extraction, et `scheduled` sinon, y compris pour une épreuve du jour même. Toutes les épreuves attribuent des médailles. La source ne donne pas les participants des épreuves à venir, donc les athlètes du jour d'une nation se limitent à ses médaillés.
+Le jour d'une épreuve vient de sa page Wikipédia ou du programme de sa page de sport. S'il est illisible, l'épreuve est importée sans date plutôt que de le deviner : la colonne `starts_at` devient facultative. Le statut se décide à l'extraction : `finished` avec un podium, `unpublished` si le jour est antérieur à celui de l'extraction ou s'il est inconnu, et `scheduled` sinon, y compris pour une épreuve du jour même. Toutes les épreuves attribuent des médailles. La source ne donne pas les participants des épreuves à venir, donc les athlètes du jour d'une nation se limitent à ses médaillés.
 
 Pour une extraction, l'exploitant lance `pnpm data:extract`, arrête `pnpm dev`, puis lance `pnpm db:reset`, car `db:seed` ne corrige pas une ligne déjà chargée.
 
@@ -105,3 +105,11 @@ Six tâches, dans l'ordre des couches. Chaque tâche nomme le test à écrire d'
 - [x] T04 [005-AS2, AS5] Écrire d'abord les tests dans `apps/api/test/results.e2e.spec.ts` et `apps/api/test/medals.e2e.spec.ts` (« 005-AS2: … », « 005-AS5: … »), puis les deux routes
 - [ ] T05 [005-AS1, AS3, AS4, AS6, AS7] Écrire d'abord `apps/api/scripts/extract-core.spec.mts`, `extract.spec.mts` et `results/infra/real-data.spec.ts`, puis le script, les fichiers de référence, la commande, la vraie extraction et les fichiers de données
 - [ ] T06 [005-AS1, AS2, AS3, AS5, AS6] Écrire d'abord les tests dans `results-page.test.tsx`, `medals-page.test.tsx`, `routes/__root.test.tsx` et `mocks/handlers.test.ts` (« 005-AS1: … », « 005-AS2: … », « 005-AS3: … », « 005-AS5: … », « 005-AS6: … »), puis la fausse API, les écrans, les scénarios corrigés des specs 001 à 004, leurs tests et le `README.md`
+
+## 7. Corrections
+
+### Décision humaine pendant T05
+
+La source ne donne pas le jour de toutes les épreuves. L'humain a choisi de les importer sans date : leurs médailles comptent, et elles figurent dans un bloc « Date non publiée » du calendrier. T07 se réalise avant T05, qui en dépend. La route ajoutée est `GET /api/results/undated`, qui rend ces épreuves avec leur statut et leur classement.
+
+- [x] T07 [005-AS3] Écrire d'abord les tests dans `results/application/results.application.spec.ts`, `results/infra/drizzle-sport-event.repository.int.spec.ts`, `apps/api/test/results.e2e.spec.ts` et `search/domain/search-hit.spec.ts` (« 005-AS3: … »), puis la colonne `starts_at` facultative, la migration générée, `ListUndatedEvents`, la route et la recherche sans date. Preuve : mesure de T05, 86 épreuves sur 151 sans jour lisible.

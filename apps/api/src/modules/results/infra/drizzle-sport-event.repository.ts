@@ -1,18 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { SportSlug } from '@joj/shared';
-import { and, asc, desc, eq, gte, inArray, lt } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, inArray, isNotNull, isNull, lt } from 'drizzle-orm';
 import type { Database } from '../../../core/database/database';
 import { DATABASE } from '../../../core/database/database.module';
 import { SportEventRepository } from '../application/sport-event.repository';
 import type { DataSource } from '../domain/data-source';
-import type { SportEvent } from '../domain/sport-event';
+import type { SportEvent, UndatedEvent } from '../domain/sport-event';
 import {
   dataExtractions,
   sportEventEntries,
   type SportEventRow,
   sportEvents,
 } from './results.schema';
-import { toDomain } from './sport-event.mapper';
+import { toDomain, toUndatedEvent } from './sport-event.mapper';
 
 const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 
@@ -44,7 +44,14 @@ export class DrizzleSportEventRepository extends SportEventRepository {
     const rows = await this.db
       .select()
       .from(sportEvents)
-      .where(and(eq(sportEvents.status, 'finished'), eq(sportEvents.awardsMedals, true)))
+      .where(
+        and(
+          eq(sportEvents.status, 'finished'),
+          eq(sportEvents.awardsMedals, true),
+          // Sans date, on ne peut pas dire qu'une épreuve est récente.
+          isNotNull(sportEvents.startsAt),
+        ),
+      )
       .orderBy(desc(sportEvents.startsAt))
       .limit(limit);
     return this.withEntries(rows);
@@ -54,9 +61,26 @@ export class DrizzleSportEventRepository extends SportEventRepository {
     const rows = await this.db
       .select()
       .from(sportEvents)
-      .where(eq(sportEvents.status, 'in-progress'))
+      .where(and(eq(sportEvents.status, 'in-progress'), isNotNull(sportEvents.startsAt)))
       .orderBy(asc(sportEvents.startsAt), asc(sportEvents.sport));
     return this.withEntries(rows);
+  }
+
+  async listUndated(): Promise<UndatedEvent[]> {
+    const rows = await this.db
+      .select()
+      .from(sportEvents)
+      .where(isNull(sportEvents.startsAt))
+      .orderBy(asc(sportEvents.sport), asc(sportEvents.name));
+    if (rows.length === 0) return [];
+
+    const entryRows = await this.entriesOf(rows);
+    return rows.map((row) =>
+      toUndatedEvent(
+        row,
+        entryRows.filter((entry) => entry.eventId === row.id),
+      ),
+    );
   }
 
   async findDataSource(): Promise<DataSource | null> {
@@ -77,7 +101,17 @@ export class DrizzleSportEventRepository extends SportEventRepository {
   private async withEntries(rows: SportEventRow[]): Promise<SportEvent[]> {
     if (rows.length === 0) return [];
 
-    const entryRows = await this.db
+    const entryRows = await this.entriesOf(rows);
+    return rows.map((row) =>
+      toDomain(
+        row,
+        entryRows.filter((entry) => entry.eventId === row.id),
+      ),
+    );
+  }
+
+  private entriesOf(rows: SportEventRow[]) {
+    return this.db
       .select()
       .from(sportEventEntries)
       .where(
@@ -86,11 +120,5 @@ export class DrizzleSportEventRepository extends SportEventRepository {
           rows.map((row) => row.id),
         ),
       );
-    return rows.map((row) =>
-      toDomain(
-        row,
-        entryRows.filter((entry) => entry.eventId === row.id),
-      ),
-    );
   }
 }

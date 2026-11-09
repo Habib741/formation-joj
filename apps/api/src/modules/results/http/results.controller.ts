@@ -10,6 +10,8 @@ import {
   nationAthletesQuerySchema,
   type SportEventResponse,
   sportEventSchema,
+  type UndatedEventResponse,
+  undatedEventSchema,
 } from '@joj/shared';
 import { createZodDto, ZodSerializerDto } from 'nestjs-zod';
 import { GetDataSource } from '../application/use-cases/get-data-source';
@@ -18,6 +20,7 @@ import { ListDayResults } from '../application/use-cases/list-day-results';
 import { ListLatestResults } from '../application/use-cases/list-latest-results';
 import { ListLiveEvents } from '../application/use-cases/list-live-events';
 import { ListNationAthletes } from '../application/use-cases/list-nation-athletes';
+import { ListUndatedEvents } from '../application/use-cases/list-undated-events';
 import type { NationAthlete, SportEvent } from '../domain/sport-event';
 
 class DayResultsQueryDto extends createZodDto(dayResultsQuerySchema) {}
@@ -26,6 +29,7 @@ class NationAthletesQueryDto extends createZodDto(nationAthletesQuerySchema) {}
 class SportEventDto extends createZodDto(sportEventSchema) {}
 class NationAthleteDto extends createZodDto(nationAthleteSchema) {}
 class DataSourceDto extends createZodDto(dataSourceSchema) {}
+class UndatedEventDto extends createZodDto(undatedEventSchema) {}
 
 /** Couche fine : valider (DTO zod), appeler un cas d'usage, sérialiser. Aucune règle métier ici. */
 @ApiTags('results')
@@ -38,6 +42,7 @@ export class ResultsController {
     private readonly listLatestResults: ListLatestResults,
     private readonly listLiveEvents: ListLiveEvents,
     private readonly getDataSource: GetDataSource,
+    private readonly listUndatedEvents: ListUndatedEvents,
   ) {}
 
   @Get()
@@ -50,6 +55,12 @@ export class ResultsController {
   @ZodSerializerDto(DataSourceDto)
   source(): Promise<DataSourceResponse> {
     return this.getDataSource.execute();
+  }
+
+  @Get('undated')
+  @ZodSerializerDto([UndatedEventDto])
+  undated(): Promise<UndatedEventResponse[]> {
+    return this.listUndatedEvents.execute();
   }
 
   @Get('latest')

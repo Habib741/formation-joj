@@ -22,7 +22,8 @@ export const sportEvents = pgTable(
     status: varchar('status', { length: 20 }).notNull(),
     // Une finale attribue des médailles ; une manche ou une demi-finale, non.
     awardsMedals: boolean('awards_medals').notNull().default(false),
-    startsAt: timestamp('starts_at', { withTimezone: true, precision: 3 }).notNull(),
+    // Vide quand la source ne donne pas le jour : on ne le devine pas.
+    startsAt: timestamp('starts_at', { withTimezone: true, precision: 3 }),
     // Faux quand la source ne donne pas l'heure : starts_at vaut alors minuit ce jour-là.
     hasStartTime: boolean('has_start_time').notNull().default(false),
   },

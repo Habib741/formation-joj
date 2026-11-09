@@ -142,6 +142,12 @@ export type SportEventResponse = z.infer<typeof sportEventSchema>;
 
 export const sportEventListSchema = z.array(sportEventSchema);
 
+/** Une épreuve dont la source ne donne pas le jour : elle n'a donc ni date ni heure. */
+export const undatedEventSchema = sportEventSchema.omit({ startsAt: true, hasStartTime: true });
+export type UndatedEventResponse = z.infer<typeof undatedEventSchema>;
+
+export const undatedEventListSchema = z.array(undatedEventSchema);
+
 /** Un athlète du jour d'une nation, avec son épreuve, son heure et son statut. */
 export const nationAthleteSchema = z.object({
   competitor: z.string(),

@@ -75,4 +75,22 @@ describe('findSearchHits', () => {
   it('004-AS4: removes accents and capitals from a text', () => {
     expect(normalizeSearchText('  Équipe du SÉNÉGAL ')).toBe('equipe du senegal');
   });
+
+  it('005-AS3: finds an event and an athlete without a known day', () => {
+    const hits = findSearchHits('boxeur', {
+      nations: [],
+      events: [
+        {
+          sport: 'boxe',
+          name: '-51 kg hommes',
+          startsAt: null,
+          participants: [{ competitor: 'Boxeur', nationCode: 'kz' }],
+        },
+      ],
+    });
+
+    expect(hits).toEqual([
+      { kind: 'athlete', label: 'Boxeur', date: null, sport: 'boxe', nation: 'kz' },
+    ]);
+  });
 });
