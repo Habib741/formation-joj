@@ -214,4 +214,22 @@ describe('ResultsPage', () => {
     expect(past).toHaveTextContent('Résultat non publié');
     expect(within(past).queryByRole('table')).not.toBeInTheDocument();
   });
+
+  it('005-AS3: shows a future event as scheduled, without ranking or medal', async () => {
+    fixture.sportEvents.push({
+      id: '0199f5c2-0000-7000-8000-000000000035',
+      sport: 'boxe',
+      name: '60 kg femmes',
+      startsAt: '2026-11-12T00:00:00.000Z',
+      hasStartTime: false,
+      status: 'scheduled',
+      ranking: [],
+    });
+    await open('date=2026-11-12');
+
+    const future = await eventCard('60 kg femmes');
+    expect(future).toHaveTextContent('Programmé');
+    expect(within(future).queryByRole('table')).not.toBeInTheDocument();
+    expect(future).not.toHaveTextContent(/Or|Argent|Bronze/);
+  });
 });
