@@ -125,4 +125,23 @@ describe('buildNationStandings', () => {
 
     expect(brazil).toMatchObject({ gold: 1, silver: 0, bronze: 0, total: 1 });
   });
+
+  it('005-AS4: counts the podium of the 100 m when it is the only medal of a nation', () => {
+    const standings = buildNationStandings(
+      [nation('ng', 'Nigeria'), nation('cn', 'Chine', 'asie'), nation('pl', 'Pologne', 'europe')],
+      [
+        medal('ng', 'gold', 'Gift Bright'),
+        medal('cn', 'silver', 'Zhang Hangyu'),
+        medal('pl', 'bronze', 'Szymon Dołęga'),
+      ],
+    );
+
+    expect(
+      standings.map(({ nationName, gold, silver, bronze }) => [nationName, gold, silver, bronze]),
+    ).toEqual([
+      ['Nigeria', 1, 0, 0],
+      ['Chine', 0, 1, 0],
+      ['Pologne', 0, 0, 1],
+    ]);
+  });
 });
