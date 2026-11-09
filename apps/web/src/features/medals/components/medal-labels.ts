@@ -6,6 +6,7 @@ export const CONTINENT_LABELS: Record<Continent, string> = {
   asie: 'Asie',
   europe: 'Europe',
   oceanie: 'Océanie',
+  refugies: 'Réfugiés',
 };
 
 export const MEDAL_TYPE_LABELS: Record<MedalType, string> = {

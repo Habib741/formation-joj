@@ -2,7 +2,15 @@ import { z } from 'zod';
 import { sportSlugSchema } from './results.ts';
 
 /** Liste fermée des continents ; les libellés français sont côté front. */
-export const CONTINENTS = ['afrique', 'ameriques', 'asie', 'europe', 'oceanie'] as const;
+/** `refugies` : l'équipe olympique des réfugiés ne représente aucun continent. */
+export const CONTINENTS = [
+  'afrique',
+  'ameriques',
+  'asie',
+  'europe',
+  'oceanie',
+  'refugies',
+] as const;
 export const continentSchema = z.enum(CONTINENTS);
 export type Continent = z.infer<typeof continentSchema>;
 
