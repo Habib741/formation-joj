@@ -1,5 +1,6 @@
 /** Logique pure de `pnpm data:extract` (testée) ; le réseau et les fichiers sont dans extract.mts. */
 import { createHash } from 'node:crypto';
+import { GAMES_FIRST_DAY, GAMES_LAST_DAY } from '@joj/shared';
 
 export interface NationReference {
   code: string;
@@ -203,8 +204,11 @@ export function readEventDay(page: string): { day: string | null; time: string |
   const dates = page.match(/\|\s*dates?\s*=\s*([^\n]*)/i)?.[1] ?? '';
   const last = [...dates.matchAll(DAY)].at(-1);
   if (last === undefined) return { day: null, time: null };
+  const day = isoDay(last[1]!, last[2]!);
+  // La source contient des coquilles (« 8 October ») : un jour hors des Jeux n'est pas retenu.
+  if (day < GAMES_FIRST_DAY || day > GAMES_LAST_DAY) return { day: null, time: null };
   const time = page.match(/'''(\d{1,2}:\d{2})'''\s*\n\|[^\n]*Final/)?.[1] ?? null;
-  return { day: isoDay(last[1]!, last[2]!), time };
+  return { day, time };
 }
 
 function slotCount(cell: string): number {

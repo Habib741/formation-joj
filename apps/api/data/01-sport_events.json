@@ -95,8 +95,8 @@
     "name": "100 m hommes",
     "status": "finished",
     "awards_medals": true,
-    "starts_at": "2026-10-08T17:32:00.000Z",
-    "has_start_time": true
+    "starts_at": "2026-11-08T00:00:00.000Z",
+    "has_start_time": false
   },
   {
     "id": "c9e9d233-9800-5ce0-aa03-8c9b7ff138aa",
@@ -239,8 +239,8 @@
     "name": "Lancer du marteau hommes",
     "status": "finished",
     "awards_medals": true,
-    "starts_at": "2026-10-08T14:00:00.000Z",
-    "has_start_time": true
+    "starts_at": "2026-11-08T00:00:00.000Z",
+    "has_start_time": false
   },
   {
     "id": "748179e9-de0f-511e-aa22-41e5849e173e",

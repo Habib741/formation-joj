@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
 import {
   continentSchema,
+  GAMES_FIRST_DAY,
+  GAMES_LAST_DAY,
   MIXED_TEAM_CODE,
   sportEventStatusSchema,
   sportSlugSchema,
@@ -59,6 +61,26 @@ describe('real data files', () => {
     ]);
     expect(events()).toHaveLength(151);
     expect(JSON.stringify(entries())).not.toMatch(/Démo/);
+  });
+
+  it('005-AS1: dates the men 100 m on 8 November', () => {
+    const sprint = events().find(
+      (event) => event.name === '100 m hommes' && event.sport === 'athletisme',
+    );
+
+    expect(sprint?.starts_at?.slice(0, 10)).toBe('2026-11-08');
+  });
+
+  it('005-AS1: dates every event within the Games, or not at all', () => {
+    expect(
+      events()
+        .filter(
+          ({ starts_at: day }) =>
+            day !== null &&
+            (day.slice(0, 10) < GAMES_FIRST_DAY || day.slice(0, 10) > GAMES_LAST_DAY),
+        )
+        .map((event) => event.name),
+    ).toEqual([]);
   });
 
   it('005-AS3: gives no medalist to an event that is not finished', () => {
