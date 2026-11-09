@@ -84,4 +84,62 @@ describe('runExtraction', () => {
     const events = JSON.parse(readFileSync(join(dataDir, '01-sport_events.json'), 'utf8'));
     expect(events[0].starts_at).toBeNull();
   });
+
+  it('005-AS7: shows a new and a corrected podium, then keeps them when the source stops responding', async () => {
+    const pages = (silverFor100m: string) => ({
+      ...PAGES,
+      'Athletics at the 2026 Summer Youth Olympics': `===Men's events===
+{| {{MedalistTable|columns=2}}
+|-
+| 100 m<br />{{DetailsLink|Men's 100 metres}}
+| {{flagIOCmedalist|[[Gift Bright]]|NGR|2026 Summer Youth}}|| 10.28
+| {{flagIOCmedalist|[[${silverFor100m}]]|NGR|2026 Summer Youth}}|| 10.57
+|-
+| 200 m<br />{{DetailsLink|Men's 200 metres}}
+| ${silverFor100m === 'Corrigé' ? '{{flagIOCmedalist|[[Nouveau Podium]]|NGR|2026 Summer Youth}}|| 20.10' : '||'}
+|}
+`,
+    });
+    const events = {
+      "Athletics|Men's events|100 m": { name: '100 m hommes', sport: 'athletisme' },
+      "Athletics|Men's events|200 m": { name: '200 m hommes', sport: 'athletisme' },
+    };
+    const competitors = () =>
+      (
+        JSON.parse(readFileSync(join(dataDir, '02-sport_event_entries.json'), 'utf8')) as {
+          competitor: string;
+        }[]
+      ).map((entry) => entry.competitor);
+    const extractedOn = () =>
+      (
+        JSON.parse(readFileSync(join(dataDir, '04-data_extractions.json'), 'utf8')) as {
+          extracted_on: string;
+        }[]
+      )[0]?.extracted_on;
+
+    await runExtraction({
+      ...options(dataDir, source(pages('Ancien'))),
+      events,
+      today: '2026-11-08',
+    });
+    expect(competitors()).toEqual(['Gift Bright', 'Ancien']);
+    expect(extractedOn()).toBe('2026-11-08');
+
+    await runExtraction({
+      ...options(dataDir, source(pages('Corrigé'))),
+      events,
+      today: '2026-11-09',
+    });
+    expect(competitors()).toEqual(['Gift Bright', 'Corrigé', 'Nouveau Podium']);
+    expect(extractedOn()).toBe('2026-11-09');
+
+    const failing = async () => {
+      throw new Error('La source ne répond pas');
+    };
+    await expect(
+      runExtraction({ ...options(dataDir, failing), events, today: '2026-11-10' }),
+    ).rejects.toThrow('La source ne répond pas');
+    expect(competitors()).toEqual(['Gift Bright', 'Corrigé', 'Nouveau Podium']);
+    expect(extractedOn()).toBe('2026-11-09');
+  });
 });
