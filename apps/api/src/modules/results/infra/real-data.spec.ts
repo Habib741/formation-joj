@@ -71,6 +71,14 @@ describe('real data files', () => {
     expect(sprint?.starts_at?.slice(0, 10)).toBe('2026-11-08');
   });
 
+  it('005-AS3: dates the men 400 m on the day of its final', () => {
+    const lap = events().find(
+      (event) => event.name === '400 m hommes' && event.sport === 'athletisme',
+    );
+
+    expect(lap?.starts_at?.slice(0, 10)).toBe('2026-11-09');
+  });
+
   it('005-AS1: dates every event within the Games, or not at all', () => {
     expect(
       events()

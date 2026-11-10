@@ -289,12 +289,17 @@ function gridKey(key: string): string {
   return `${gender} ${label}`.toLowerCase();
 }
 
+/**
+ * Le programme du sport donne le jour de la finale ; l'en-tête de la page d'épreuve peut ne donner
+ * que celui des séries. Le programme l'emporte, et l'heure n'est gardée que si les deux concordent.
+ */
 function dayOf(event: RawEvent, input: ExtractionInput, grids: Map<string, string>) {
   const page = event.link === null ? null : (input.eventPages[event.link] ?? null);
   const read = page === null ? { day: null, time: null } : readEventDay(page);
-  if (read.day !== null) return read;
   const sport = event.key.split('|')[0]!;
-  return { day: grids.get(`${sport}|${gridKey(event.key)}`) ?? null, time: null };
+  const scheduled = grids.get(`${sport}|${gridKey(event.key)}`) ?? null;
+  if (scheduled === null || scheduled === read.day) return read;
+  return { day: scheduled, time: null };
 }
 
 /** Le contenu des fichiers de données. Toute incohérence arrête l'extraction en la nommant. */

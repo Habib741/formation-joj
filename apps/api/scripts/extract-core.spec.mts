@@ -203,6 +203,55 @@ describe('reading the days', () => {
     });
   });
 
+  it('005-AS3: prefers the day of the final in the schedule of the sport to the header of the event', () => {
+    const schedule = `
+==Schedule==
+{| class="wikitable"
+! Event ↓ / Date → || colspan=2| Sun 8 || colspan=2| Mon 9
+|- align="center"
+| align="left"| Men's 100 m || bgcolor="#D9FFB2"|SF || colspan=2| || bgcolor="#FFDF80" |F
+|}
+`;
+    const header = (time: string) =>
+      `| date = 8 November\n| bgcolor="lemonchiffon" | '''${time}'''\n| bgcolor="lemonchiffon" | '''Final'''\n`;
+    const sprintPage = "Athletics at the 2026 Summer Youth Olympics – Men's 100 metres";
+
+    const files = buildDataFiles(
+      input({
+        sportPages: { Athletics: `${ATHLETICS}${schedule}` },
+        eventPages: { [sprintPage]: header('17:32') },
+      }),
+    );
+
+    expect(files['01-sport_events.json'][0]).toMatchObject({
+      name: '100 m hommes',
+      starts_at: '2026-11-09T00:00:00.000Z',
+      has_start_time: false,
+    });
+  });
+
+  it('005-AS3: keeps the time of the header when the schedule gives the same day', () => {
+    const files = buildDataFiles(
+      input({
+        sportPages: {
+          Athletics: `${ATHLETICS}
+==Schedule==
+{| class="wikitable"
+! Event ↓ / Date → || colspan=2| Sun 8 || colspan=2| Mon 9
+|- align="center"
+| align="left"| Men's 100 m || bgcolor="#D9FFB2"|SF || bgcolor="#FFDF80" |F || colspan=2|
+|}
+`,
+        },
+      }),
+    );
+
+    expect(files['01-sport_events.json'][0]).toMatchObject({
+      starts_at: '2026-11-08T17:32:00.000Z',
+      has_start_time: true,
+    });
+  });
+
   it('005-AS3: reads the day of a final in the schedule of a sport', () => {
     const page = `==Schedule==
 {| class="wikitable"
